@@ -40,18 +40,24 @@ router.post('/internal/leads/parsed', internalAuth, async (req: Request, res: Re
       await prisma.lead.createMany({ data: leads.map((l: any) => ({ ...l, leadRequestId })) });
     }
     success(res, { updated: true });
-  } catch (err: any) { error(res, 500, err.message); }
+  } catch (err: any) {
+    logger.error('[internal] leads/parsed error', { variables: { error: err.message } });
+    error(res, 500, 'Internal error processing callback');
+  }
 });
 
 router.post('/internal/leads/failed', internalAuth, async (req: Request, res: Response) => {
   try {
-    const { leadRequestId, reason } = req.body;
+    const { leadRequestId } = req.body;
     await prisma.leadRequest.update({
       where: { id: leadRequestId },
       data: { status: 'FAILED' },
     });
     success(res, { updated: true });
-  } catch (err: any) { error(res, 500, err.message); }
+  } catch (err: any) {
+    logger.error('[internal] leads/failed error', { variables: { error: err.message } });
+    error(res, 500, 'Internal error processing callback');
+  }
 });
 
 // Module routes

@@ -11,14 +11,10 @@ export const verifyHmacSig = (
       .createHmac(algorithm, secret)
       .update(payload)
       .digest('hex');
-    // Return false immediately if lengths differ (timing-safe)
-    if (expected.length !== signature.length) return false;
-    // Constant-time string comparison to prevent timing attacks
-    let result = 0;
-    for (let i = 0; i < expected.length; i++) {
-      result |= expected.charCodeAt(i) ^ signature.charCodeAt(i);
-    }
-    return result === 0;
+    const expectedBuf = Buffer.from(expected, 'hex');
+    const receivedBuf = Buffer.from(signature, 'hex');
+    if (expectedBuf.length !== receivedBuf.length) return false;
+    return crypto.timingSafeEqual(new Uint8Array(expectedBuf), new Uint8Array(receivedBuf));
   } catch {
     return false;
   }

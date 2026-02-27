@@ -28,7 +28,11 @@ export class AdminController {
 
   async suspendUser(req: Request, res: Response): Promise<void> {
     try {
-      const suspend = req.body.suspend !== false;
+      const { suspend } = req.body;
+      if (typeof suspend !== 'boolean') {
+        error(res, 400, '"suspend" must be a boolean');
+        return;
+      }
       const result = await adminService.suspendUser(req.params.id, suspend);
       success(res, result);
     } catch (err: any) { error(res, 400, err.message); }

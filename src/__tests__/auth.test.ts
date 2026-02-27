@@ -5,19 +5,8 @@ import { prisma } from '@/db/prisma';
 const app = new App().getApp();
 
 describe('Auth API', () => {
-  beforeEach(async () => {
-    try {
-      await prisma.user.deleteMany();
-      await prisma.corporation.deleteMany();
-    } catch { /* ignore in test env without DB */ }
-  });
-
   afterAll(async () => {
-    try {
-      await prisma.user.deleteMany();
-      await prisma.corporation.deleteMany();
-      await prisma.$disconnect();
-    } catch { /* ignore */ }
+    await prisma.$disconnect().catch(() => { /* ignore disconnect errors in test env */ });
   });
 
   describe('Health Check', () => {
