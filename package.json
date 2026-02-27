@@ -1,0 +1,77 @@
+{
+  "name": "backend",
+  "version": "1.0.0",
+  "main": "dist/server.js",
+"scripts": {
+
+  "dev:db": "prisma db push",
+  "dev:start": "ts-node-dev --respawn --transpile-only -r tsconfig-paths/register src/server.ts",
+  "dev": "npm run dev:db && npm run dev:start",
+
+
+  "staging:db": "prisma migrate deploy",
+  "staging:start": "cross-env NODE_ENV=staging node dist/server.js",
+  "staging": "npm run build && npm run staging:db && npm run staging:start",
+
+
+  "prod:db": "prisma migrate deploy",
+  "prod:start": "cross-env NODE_ENV=production node dist/server.js",
+  "prod": "npm run build && npm run prod:db && npm run prod:start",
+
+
+  "build": "tsc",
+
+
+  "test": "cross-env NODE_ENV=test jest",
+  "test:watch": "cross-env NODE_ENV=test jest --watch",
+  "test:coverage": "cross-env NODE_ENV=test jest --coverage",
+
+
+  "lint": "eslint src/**/*.ts",
+  "lint:fix": "eslint src/**/*.ts --fix",
+
+
+  "prisma:studio": "prisma studio",
+  "prisma:reset": "prisma migrate reset --force",
+  "prisma:generate": "prisma generate",
+  "prisma:seed": "ts-node prisma/seed.ts"
+},
+  "author": "Ashutosh Kumar",
+  "license": "MIT",
+  "dependencies": {
+    "@prisma/client": "^5.7.1",
+    "bcrypt": "^5.1.1",
+    "bcryptjs": "^2.4.3",
+    "body-parser": "^1.20.2",
+    "cors": "^2.8.5",
+    "dotenv": "^16.4.5",
+    "express": "^4.19.2",
+    "joi": "^17.13.3",
+    "jsonwebtoken": "^9.0.2"
+  },
+  "keywords": [],
+  "description": "Express TypeScript Boilerplate with Prisma and Winston",
+  "devDependencies": {
+    "@types/bcrypt": "^5.0.2",
+    "@types/bcryptjs": "^2.4.6",
+    "@types/body-parser": "^1.19.5",
+    "@types/cors": "^2.8.17",
+    "@types/express": "^4.17.21",
+    "@types/jest": "^29.5.8",
+    "@types/jsonwebtoken": "^9.0.5",
+    "@types/node": "^20.10.4",
+    "@types/supertest": "^2.0.16",
+    "@typescript-eslint/eslint-plugin": "^6.13.1",
+    "@typescript-eslint/parser": "^6.13.1",
+    "cross-env": "^10.0.0",
+    "eslint": "^8.54.0",
+    "jest": "^29.7.0",
+    "prisma": "^5.7.1",
+    "supertest": "^7.0.0",
+    "ts-jest": "^29.1.1",
+    "ts-node": "^10.9.1",
+    "ts-node-dev": "^2.0.0",
+    "tsconfig-paths": "^4.2.0",
+    "typescript": "^5.3.2"
+  }
+}
