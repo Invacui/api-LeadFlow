@@ -1,5 +1,17 @@
 import { Request, Response, NextFunction } from 'express';
-import { UserResponse } from '@/interfaces/users.i';
+import { UserRole } from '@prisma/client';
+
+export interface UserResponse {
+  id: string;
+  email: string;
+  name: string;
+  role: UserRole;
+  isVerified: boolean;
+  tokenBalance: number;
+  corporationId: string;
+  createdAt: Date;
+  updatedAt: Date;
+}
 
 export interface UserAuthResponse {
   user: UserResponse;
@@ -9,9 +21,13 @@ export interface UserAuthResponse {
 // Express request extensions
 export interface AuthenticatedRequest extends Request {
   user?: {
-    userId: string;
-    iat: number;
-    exp: number;
+    id: string;
+    role: UserRole;
+    tokenBalance: number;
+    // Legacy fields
+    userId?: string;
+    iat?: number;
+    exp?: number;
   };
 }
 
@@ -26,9 +42,10 @@ export type ControllerMethod = (
 export interface EnvironmentVariables {
   NODE_ENV: string;
   PORT: number;
-  MONGO_URI: string;
-  DB_NAME: string;
-  PRIVATE_TOKEN_KEY: string;
+  DATABASE_URL?: string;
+  MONGO_URI?: string;
+  DB_NAME?: string;
+  PRIVATE_TOKEN_KEY?: string;
   BASE_URL: string;
 }
 

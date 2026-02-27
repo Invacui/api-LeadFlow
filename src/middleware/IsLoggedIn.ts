@@ -1,86 +1,44 @@
 import { Request, Response, NextFunction } from 'express';
 import jwt from 'jsonwebtoken';
-import { AuthenticatedRequest, JWTPayload } from '@/types';
+import { JWTPayload } from '@/types';
 
-/**
- * @function isLoggedIn
- * @description Middleware to check if the user is logged in and has a valid JWT token
- * @param {AuthenticatedRequest} req - Express request object
- * @param {Response} res - Express response object
- * @param {NextFunction} next - Express next function
- */
+// Legacy middleware - kept for old routes
 export const isLoggedIn = async (
-  req: AuthenticatedRequest,
+  req: Request,
   res: Response,
   next: NextFunction
 ): Promise<void> => {
   try {
     const authHeader = req.headers.authorization;
-    const apiKeyHeader = req.headers['x-api-key'] as string;
-    const secretKey = process.env.PRIVATE_TOKEN_KEY;
+    const secretKey = process.env.JWT_ACCESS_SECRET || process.env.PRIVATE_TOKEN_KEY;
 
     if (!secretKey) {
-      logger.error('[middleware] JWT secret key not configured', {
-        fileName: __filename,
-        methodName: 'isLoggedIn',
-      });
       res.status(500).json({ message: 'Server configuration error' });
       return;
     }
 
     let token: string | undefined;
-
-    // Check Authorization header first (Bearer token)
     if (authHeader) {
-      token = authHeader.split(' ')[1]; // Bearer TOKEN
-    }
-    // Fallback to X-API-Key header
-    else if (apiKeyHeader) {
-      token = apiKeyHeader;
+      token = authHeader.split(' ')[1];
     }
 
     if (!token) {
-      logger.warn('[middleware] No token provided in any header', {
-        fileName: __filename,
-        methodName: 'isLoggedIn',
-        variables: {
-          ip: req.ip,
-          userAgent: req.get('User-Agent'),
-          hasAuthHeader: !!authHeader,
-          hasApiKeyHeader: !!apiKeyHeader,
-        },
-      });
-      res.status(401).json({
-        message: 'Access denied. No token provided.',
-        hint: 'Use Authorization: Bearer <token> or X-API-Key: <token> header',
-      });
+      res.status(401).json({ message: 'Access denied. No token provided.' });
       return;
     }
 
-    // Verify the token
-    const decoded = jwt.verify(token, secretKey) as JWTPayload;
+    const decoded = jwt.verify(token, secretKey) as JWTPayload & { id?: string };
+    const userId = (decoded as any).id || decoded.userId;
 
-    // Add user information to request object
     req.user = {
-      userId: decoded.userId,
-      iat: decoded.iat,
-      exp: decoded.exp,
+      id: userId,
+      role: 'USER' as any,
+      tokenBalance: 0,
     };
 
-    logger.info('[middleware] User authenticated successfully', {
-      fileName: __filename,
-      methodName: 'isLoggedIn',
-      variables: {
-        userId: decoded.userId,
-        ip: req.ip,
-        userAgent: req.get('User-Agent'),
-        tokenSource: authHeader ? 'Authorization' : 'X-API-Key',
-      },
-    });
-
     next();
-  } catch (error) {
-    // ...existing error handling...
+  } catch {
+    res.status(401).json({ message: 'Invalid or expired token' });
   }
 };
 

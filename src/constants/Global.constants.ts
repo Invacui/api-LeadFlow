@@ -1,9 +1,10 @@
 export class GlobalConstants {
-  readonly TOKEN_EXPIRY = '1h';
+  readonly TOKEN_EXPIRY = '15m';
+  readonly REFRESH_TOKEN_EXPIRY = '7d';
   readonly JWT_ALGORITHM = 'HS256';
   readonly BCRYPT_ROUNDS = 12;
   readonly MAX_LOGIN_ATTEMPTS = 5;
-  readonly LOCKOUT_TIME = 15 * 60 * 1000; // 15 minutes in milliseconds
+  readonly LOCKOUT_TIME = 15 * 60 * 1000;
   readonly PASSWORD_MIN_LENGTH = 8;
   readonly PASSWORD_MAX_LENGTH = 128;
   readonly EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -15,8 +16,16 @@ export class GlobalConstants {
   readonly AGE_MIN = 1;
   readonly AGE_MAX = 120;
   readonly DEFAULT_USER_CREDITS = 1000;
-  readonly COUNTRY_CODE_REGEX = /^\+\d{1,3}$/; // E.164 format for country code
-  readonly PHONE_NUMBER_REGEX = /^\d{4,14}$/; // E.164 format for phone number
+  readonly COUNTRY_CODE_REGEX = /^\+\d{1,3}$/;
+  readonly PHONE_NUMBER_REGEX = /^\d{4,14}$/;
+
+  // Token costs
+  readonly LEAD_PARSE_COST = 1;
+  readonly DEDUP_COST = 5;
+  readonly EMAIL_SEND_COST = 2;
+  readonly WHATSAPP_SEND_COST = 3;
+  readonly AI_REPLY_COST = 5;
+  readonly FREE_DEMO_TOKENS = 500;
 }
 
 export const globalConstants = new GlobalConstants();
