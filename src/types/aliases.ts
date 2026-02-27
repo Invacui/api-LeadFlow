@@ -42,9 +42,7 @@ export type AuthService = typeof import('@/services/Auth.service');
 
 // Types
 export type {
-  CreateUserRequest,
-  UserResponse,
-  AuthResponse,
+  UserAuthResponse,
   AuthenticatedRequest,
   ControllerMethod,
   ValidationError,

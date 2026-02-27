@@ -1,47 +1,15 @@
-import { Router } from 'express';
+import { Router, Request, Response } from 'express';
 import { UserAuthController } from '@/controllers/Auth.controller';
-import { isLoggedIn } from '@/middleware/IsLoggedIn';
+import { isLoggedIn } from '@/shared/middleware/IsLoggedIn';
+import { authRateLimiter } from '@/shared/middleware/rateLimiter';
 
-
-// Initialize the UserAuthController
 const userAuthController = new UserAuthController();
-
-// Create router instance
 const authRouter = Router();
 
-/**
- * @description Auth routes for user management
- * All routes are prefixed with /auth
- */
-
-// Create a new user (Public route)
-authRouter.post('/', userAuthController.createUser);
-
-// Get all users (Protected route)
-authRouter.get('/', isLoggedIn, userAuthController.getAllUsers);
-
-// Get a user by attrb (Protected route)
-authRouter.get('/:accessType/:userId', isLoggedIn, userAuthController.getUserByAttrb);
-
-// Update a user (Protected route)
-authRouter.patch('/:userId', isLoggedIn, userAuthController.updateUser);
-
-// Delete a user (Protected route) //@TODO: Soft delete implementation
-authRouter.delete('/:userId', isLoggedIn, userAuthController.deleteUser);
-
-// Log route registration
-logger.info('Auth routes registered successfully', {
-  fileName: module.filename,
-  methodName: 'authRouter',
-  variables: {
-    routes: [
-      'POST /auth/ - Create user',
-      'GET /auth/ - Get all users (protected)',
-      'GET /auth/:userId - Get user by ID (protected)',
-      'PATCH /auth/:userId - Update user (protected)',
-      'DELETE /auth/:userId - Delete user (protected)',
-    ],
-  },
-});
+authRouter.post('/', authRateLimiter, (req: Request, res: Response) => userAuthController.createUser(req as any, res, () => {}));
+authRouter.get('/', authRateLimiter, isLoggedIn, (req: Request, res: Response) => userAuthController.getAllUsers(req as any, res, () => {}));
+authRouter.get('/:accessType/:userId', authRateLimiter, isLoggedIn, (req: Request, res: Response) => userAuthController.getUserByAttrb(req as any, res, () => {}));
+authRouter.patch('/:userId', authRateLimiter, isLoggedIn, (req: Request, res: Response) => userAuthController.updateUser(req as any, res, () => {}));
+authRouter.delete('/:userId', authRateLimiter, isLoggedIn, (req: Request, res: Response) => userAuthController.deleteUser(req as any, res, () => {}));
 
 export default authRouter;
