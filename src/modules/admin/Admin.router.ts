@@ -1,9 +1,16 @@
+// Express router
 import { Router } from 'express';
+
+// Admin controller
 import { adminController } from './Admin.controller';
+
+// Middleware
 import { isLoggedIn } from '@/shared/middleware/IsLoggedIn';
 import { requireRole } from '@/shared/middleware/requireRole';
 import { validateRequest } from '@/shared/middleware/validateRequest';
 import { apiRateLimiter } from '@/shared/middleware/rateLimiter';
+
+// Validators
 import { updateTokensSchema } from './Admin.validator';
 
 const router = Router();

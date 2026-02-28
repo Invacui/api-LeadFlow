@@ -1,5 +1,10 @@
+// Express router
 import { Router } from 'express';
+
+// Webhooks controller
 import { webhooksController } from './Webhooks.controller';
+
+// Middleware
 import { webhookRateLimiter } from '@/shared/middleware/rateLimiter';
 
 const router = Router();

@@ -1,8 +1,15 @@
+// Express router
 import { Router } from 'express';
+
+// Conversations controller
 import { conversationsController } from './Conversations.controller';
+
+// Middleware
 import { isLoggedIn } from '@/shared/middleware/IsLoggedIn';
 import { validateRequest } from '@/shared/middleware/validateRequest';
 import { apiRateLimiter } from '@/shared/middleware/rateLimiter';
+
+// Validators
 import { replySchema } from './Conversations.validator';
 
 const router = Router();

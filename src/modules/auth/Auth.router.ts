@@ -1,23 +1,39 @@
+// External imports
 import { Router } from 'express';
+
+// Controller imports
 import { authController } from './Auth.controller';
+
+// Middleware imports
 import { validateRequest } from '@/shared/middleware/validateRequest';
 import { isLoggedIn } from '@/shared/middleware/IsLoggedIn';
 import { authRateLimiter, strictRateLimiter } from '@/shared/middleware/rateLimiter';
+
+// Validator imports
 import {
   signupSchema, loginSchema, refreshSchema,
   forgotPasswordSchema, resetPasswordSchema, resendVerificationSchema,
 } from './Auth.validator';
 
-const router = Router();
+const authRouter = Router();
 
-router.post('/signup', authRateLimiter, validateRequest(signupSchema), (req, res) => authController.signup(req, res));
-router.post('/login', strictRateLimiter, validateRequest(loginSchema), (req, res) => authController.login(req, res));
-router.post('/refresh', authRateLimiter, validateRequest(refreshSchema), (req, res) => authController.refresh(req, res));
-router.post('/logout', authRateLimiter, isLoggedIn, (req, res) => authController.logout(req, res));
-router.get('/me', authRateLimiter, isLoggedIn, (req, res) => authController.me(req, res));
-router.post('/verify-email/:token', authRateLimiter, (req, res) => authController.verifyEmail(req, res));
-router.post('/resend-verification', authRateLimiter, validateRequest(resendVerificationSchema), (req, res) => authController.resendVerification(req, res));
-router.post('/forgot-password', strictRateLimiter, validateRequest(forgotPasswordSchema), (req, res) => authController.forgotPassword(req, res));
-router.post('/reset-password', authRateLimiter, validateRequest(resetPasswordSchema), (req, res) => authController.resetPassword(req, res));
+// Create
+authRouter.post('/signup', authRateLimiter, validateRequest(signupSchema), authController.signup);
+authRouter.post('/forgot-password', strictRateLimiter, validateRequest(forgotPasswordSchema), authController.forgotPassword);
+authRouter.post('/reset-password', authRateLimiter, validateRequest(resetPasswordSchema), authController.resetPassword);
 
-export default router;
+// Read
+authRouter.get('/me', authRateLimiter, isLoggedIn, authController.me);
+
+// Update
+authRouter.post('/refresh', authRateLimiter, validateRequest(refreshSchema), authController.refresh);
+authRouter.post('/resend-verification', authRateLimiter, validateRequest(resendVerificationSchema), authController.resendVerification);
+
+// Delete
+authRouter.post('/logout', authRateLimiter, isLoggedIn, authController.logout);
+
+// Other
+authRouter.post('/login', strictRateLimiter, validateRequest(loginSchema), authController.login);
+authRouter.post('/verify-email/:token', authRateLimiter, authController.verifyEmail);
+
+export default authRouter;

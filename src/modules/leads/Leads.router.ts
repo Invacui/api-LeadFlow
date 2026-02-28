@@ -1,8 +1,15 @@
+// Express router
 import { Router } from 'express';
+
+// Leads controller
 import { leadsController } from './Leads.controller';
+
+// Middleware
 import { isLoggedIn } from '@/shared/middleware/IsLoggedIn';
 import { validateRequest } from '@/shared/middleware/validateRequest';
 import { apiRateLimiter } from '@/shared/middleware/rateLimiter';
+
+// Validators
 import { createByLinkSchema } from './Leads.validator';
 
 const router = Router();

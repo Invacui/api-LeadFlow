@@ -4,7 +4,6 @@ import bodyParser from 'body-parser';
 
 import envConfig from '@/config/environment';
 import legacyRoutes from '@/routes/Index.routes';
-import apiRoutes from '@/routes/index';
 import ErrorHandler from '@/utils/ErrorHandler.utils';
 
 export class App {
@@ -30,10 +29,8 @@ export class App {
   }
 
   private registerAppRoutes(): void {
-    // New LeadFlow API routes
-    this.app.use('/api/v1', apiRoutes);
     // Legacy routes
-    this.app.use('/', legacyRoutes);
+    this.app.use('/api/v1', legacyRoutes);
   }
 
   private registerErrorHandlingRoutes(): void {

@@ -1,10 +1,37 @@
+// Import express signatures
 import { Request, Response } from 'express';
+
+// Import auth service 
 import { authService } from './Auth.service';
+
+// Import response helpers
 import { success, error } from '@/shared/helpers/response.helper';
 
+/**
+ * AuthController
+ * 
+ * @description Controller class for handling authentication-related operations such as user signup, login, token refresh, logout, and email verification. Each method corresponds to a specific authentication action and interacts with the AuthService to perform the necessary business logic. The controller also handles request validation and response formatting, ensuring that appropriate success or error messages are returned based on the outcome of each operation.
+ */
 export class AuthController {
+
+  /**
+   * User signup
+   * 
+   * @description Handles user registration by accepting email, password, and corporation name. Validates input, checks for existing email, creates new user, and sends verification email. Returns success message on successful registration or appropriate error messages for validation failures or if email is already registered.
+   * 
+   * @param req - Express request object
+   * @param res - Express response object
+   */
   async signup(req: Request, res: Response): Promise<void> {
     try {
+      global.logger.info(`Initiating signup [CONTROLLER]`,
+        {
+          methodName: this.signup.name,
+          fileName: __filename,
+          email: req.body.email,
+          corporationName: req.body.corporationName,
+        }
+      );
       const result = await authService.signup(req.body);
       success(res, result, 201);
     } catch (err: any) {
@@ -13,8 +40,23 @@ export class AuthController {
     }
   }
 
+  /**
+   * User login
+   *
+   * @description Handles user login by accepting email and password. Validates input, checks for existing user, and returns access token on successful login or appropriate error messages for validation failures or if user is not found.
+   *
+   * @param req - Express request object
+   * @param res - Express response object
+   */
   async login(req: Request, res: Response): Promise<void> {
     try {
+      global.logger.info(`Initiating login [CONTROLLER]`,
+        {
+          methodName: this.login.name,
+          fileName: __filename,
+          email: req.body.email,
+        }
+      );
       const result = await authService.login(req.body);
       success(res, result);
     } catch (err: any) {
@@ -22,8 +64,23 @@ export class AuthController {
     }
   }
 
+  /**
+   * Refresh access token
+   * 
+   * @description Handles token refresh by accepting a refresh token. Validates input, checks for existing user, and returns new access token on successful refresh or appropriate error messages for validation failures or if user is not found.
+   *
+   * @param req - Express request object
+   * @param res - Express response object
+   */
   async refresh(req: Request, res: Response): Promise<void> {
     try {
+      global.logger.info(`Initiating refresh [CONTROLLER]`,
+        {
+          methodName: this.refresh.name,
+          fileName: __filename,
+          userId: req.user!.id,
+        }
+      );
       const { refreshToken } = req.body;
       const result = await authService.refresh(refreshToken);
       success(res, result);
@@ -32,8 +89,23 @@ export class AuthController {
     }
   }
 
+  /**
+   * User logout
+   *
+   * @description Handles user logout by invalidating the access token and refresh token. Returns success message on successful logout or appropriate error messages if user is not found.
+   * 
+   * @param req - Express request object
+   * @param res - Express response object
+   */
   async logout(req: Request, res: Response): Promise<void> {
     try {
+      global.logger.info(`Initiating logout [CONTROLLER]`,
+        {
+          methodName: this.logout.name,
+          fileName: __filename,
+          userId: req.user!.id,
+        }
+      );
       await authService.logout(req.user!.id);
       success(res, { message: 'Logged out successfully' });
     } catch (err: any) {
@@ -41,8 +113,23 @@ export class AuthController {
     }
   }
 
+  /**
+   * Get current user information
+   *
+   * @description Retrieves the information of the currently authenticated user.
+   * 
+   * @param req 
+   * @param res 
+   */
   async me(req: Request, res: Response): Promise<void> {
     try {
+      global.logger.info(`Initiating me [CONTROLLER]`,
+        {
+          methodName: this.me.name,
+          fileName: __filename,
+          userId: req.user!.id,
+        }
+      );
       const user = await authService.getMe(req.user!.id);
       success(res, user);
     } catch (err: any) {
@@ -50,8 +137,23 @@ export class AuthController {
     }
   }
 
+  /**
+   * Verify user email
+   *
+   * @description Handles email verification by accepting a token. Validates token and activates user account if valid.
+   * 
+   * @param req 
+   * @param res 
+   */
   async verifyEmail(req: Request, res: Response): Promise<void> {
     try {
+      global.logger.info(`Initiating verifyEmail [CONTROLLER]`,
+        {
+          methodName: this.verifyEmail.name,
+          fileName: __filename,
+          token: req.params.token,
+        }
+      );
       await authService.verifyEmail(req.params.token);
       success(res, { message: 'Email verified successfully' });
     } catch (err: any) {
@@ -59,8 +161,23 @@ export class AuthController {
     }
   }
 
+  /**
+   * Resend verification email
+   * 
+   * @description Handles resending of verification email by accepting an email address. Validates input and sends a new verification email if the account exists and is not already verified.
+   * 
+   * @param req - Express request object
+   * @param res - Express response object
+   */
   async resendVerification(req: Request, res: Response): Promise<void> {
     try {
+      global.logger.info(`Initiating resendVerification [CONTROLLER]`,
+        {
+          methodName: this.resendVerification.name,
+          fileName: __filename,
+          email: req.body.email,
+        }
+      );
       await authService.resendVerification(req.body);
       success(res, { message: 'Verification email sent if account exists' });
     } catch (err: any) {
@@ -68,8 +185,23 @@ export class AuthController {
     }
   }
 
+  /**
+   * Handle forgot password
+   *
+   * @description Handles password reset requests by accepting an email address. Validates input and sends a password reset email if the account exists.
+   * 
+   * @param req 
+   * @param res 
+   */
   async forgotPassword(req: Request, res: Response): Promise<void> {
     try {
+      global.logger.info(`Initiating forgotPassword [CONTROLLER]`,
+        {
+          methodName: this.forgotPassword.name,
+          fileName: __filename,
+          email: req.body.email,
+        }
+      );
       await authService.forgotPassword(req.body);
       success(res, { message: 'Reset email sent if account exists' });
     } catch (err: any) {
@@ -77,8 +209,23 @@ export class AuthController {
     }
   }
 
+  /**
+   * Reset user password
+   *
+   * @description Handles password reset by accepting a token and new password. Validates input, checks for existing user, and updates password if valid.
+   * 
+   * @param req - Express request object
+   * @param res - Express response object
+   */
   async resetPassword(req: Request, res: Response): Promise<void> {
     try {
+      global.logger.info(`Initiating resetPassword [CONTROLLER]`,
+        {
+          methodName: this.resetPassword.name,
+          fileName: __filename,
+          token: req.body.token,
+        }
+      );
       await authService.resetPassword(req.body);
       success(res, { message: 'Password reset successfully' });
     } catch (err: any) {

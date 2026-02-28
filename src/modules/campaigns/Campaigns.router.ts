@@ -1,5 +1,10 @@
+// Express router
 import { Router } from 'express';
+
+// Campaigns controller
 import { campaignsController } from './Campaigns.controller';
+
+// Middleware
 import { isLoggedIn } from '@/shared/middleware/IsLoggedIn';
 import { apiRateLimiter } from '@/shared/middleware/rateLimiter';
 

@@ -1,8 +1,15 @@
+// Express router
 import { Router } from 'express';
+
+// Templates controller
 import { templatesController } from './Templates.controller';
+
+// Middleware
 import { isLoggedIn } from '@/shared/middleware/IsLoggedIn';
 import { validateRequest } from '@/shared/middleware/validateRequest';
 import { apiRateLimiter } from '@/shared/middleware/rateLimiter';
+
+// Validators
 import { createTemplateSchema, updateTemplateSchema, launchCampaignSchema } from './Templates.validator';
 
 const router = Router();
