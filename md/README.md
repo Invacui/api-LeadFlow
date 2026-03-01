@@ -1,162 +1,48 @@
+# LeadFlow API — Documentation Index
 
----
+This folder holds documentation for the LeadFlow backend (Express, TypeScript, Prisma).
 
-# Express TypeScript Boilerplate
+## Contents
 
-A modern, production-ready Express.js boilerplate built with TypeScript, Prisma ORM, MongoDB, and Winston logging.
+| Document | Description |
+|----------|-------------|
+| [API.md](./API.md) | HTTP API reference: base URL, auth, response format, and all endpoints (auth, leads, templates, campaigns, conversations, webhooks, admin, internal). |
+| [LeadFlow_Frontend_Docs.md](./LeadFlow_Frontend_Docs.md) | Frontend architecture reference for the LeadFlow Next.js app: stack, folder structure, data flow, React Query, Zustand, services, and conventions. |
+| [DEVELOPMENT.md](./DEVELOPMENT.md) | Development setup, project layout, scripts, and practices for working on the API. |
+| [PRISMA.md](./PRISMA.md) | Prisma schema and database usage. |
+| [Workflow/DEPLOYMENT.md](./Workflow/DEPLOYMENT.md) | Deployment and release workflow. |
+| [Env/ENVIRONMENT_SETUP_COMPLETE.md](./Env/ENVIRONMENT_SETUP_COMPLETE.md) | Environment variables and configuration. |
+| [Alias/ALIAS_REFERENCE.md](./Alias/ALIAS_REFERENCE.md) | Path alias reference. |
 
----
+## Quick links
 
-## 🚀 Features
+- **API base:** All routes are under `/api/v1` (e.g. `POST /api/v1/auth/login`, `GET /api/v1/leads`).
+- **Auth:** JWT in `Authorization: Bearer <accessToken>`. Use `/api/v1/auth/refresh` with refresh token to get a new access token.
+- **Validation:** Request bodies are validated with Joi. On failure the API returns 422 with `success: false`, `error: "Validation failed"`, and `details: string[]`.
 
-* **TypeScript** – Strict type checking
-* **Prisma ORM** – Type-safe DB access
-* ** Logging** – File rotation + multi-transport
-* **JWT Authentication** – Token-based security
-* **Validation & Error Handling** – Centralized & robust
-* **Environment Configuration** – Per-environment (`dev`, `staging`, `prod`)
-* **Testing** – Jest setup for unit + integration
+## Project structure (high level)
 
----
-
-## 📂 Project Structure
-
-```bash
+```
 src/
-  config/         # Config files
-  controllers/    # Route controllers
-  dao/            # Data Access Objects
-  db/             # DB configuration
-  middleware/     # Express middleware
-  routes/         # Route definitions
-  services/       # Business logic
-  utils/          # Utility functions
-  validators/     # Joi schemas
-
+  app.ts                    # Express app and route registration
+  server.ts                 # Entry point
+  config/                   # Environment and app config
+  constants/                # App-wide constants
+  db/                       # Prisma client
+  modules/                  # Feature modules (auth, leads, templates, campaigns, conversations, webhooks, admin)
+  routes/                   # Top-level route aggregation (Index.routes.ts)
+  shared/                   # Middleware, helpers (response, paginate, validateRequest)
+  controllers/              # Legacy auth controller (deprecated in favor of modules/auth)
+  dao/                      # Legacy auth DAO
+  services/                 # Legacy auth service
+  validators/               # Legacy validators
+  utils/                    # Utilities
+  interfaces/               # Shared interfaces
+  types/                    # Shared types
 prisma/
-  schema.prisma   # Database schema
-  migrations/     # Migration history
-
-md/               # Documentation
-  API.md
-  DEVELOPMENT.md
-  DEPLOYMENT.md
+  schema.prisma
+  migrations/
+md/                         # This documentation
 ```
 
----
-
-## 🛠️ Setup Instructions
-
-1. **Clone the repo**
-
-   ```bash
-   git clone <repository-url>
-   cd express-typescript-boilerplate
-   ```
-
-2. **Install dependencies**
-
-   ```bash
-   npm install
-   ```
-
-3. **Setup environment variables**
-
-   ```bash
-   cp .env.example Private.env
-   # Edit Private.env with your MongoDB, JWT, etc.
-   ```
-
-4. **Setup database**
-
-   ```bash
-   # Generate Prisma client
-   npm run prisma:generate
-
-   # Run migrations (development)
-   npm run prisma:migrate
-
-   # Seed database with sample data
-   npm run prisma:seed
-   ```
-
-5. **Start server**
-
-   ```bash
-   # Development with hot reload
-   npm run dev
-
-   # Staging environment
-   npm run dev:staging
-
-   # Production (after build)
-   npm run build
-   npm start
-   ```
-
----
-
-## 📜 Scripts Explained
-
-### 🔧 Development / Runtime
-
-* `npm run dev` – Start dev server (hot reload, `NODE_ENV=development`)
-* `npm run dev:staging` – Start dev server with staging config
-* `npm run build` – Compile TypeScript to `dist/`
-* `npm start` – Run compiled production build (`dist/server.js`)
-* `npm run start:dev` – Run compiled build in development mode
-* `npm run start:staging` – Run compiled build in staging mode
-
-### 🧪 Testing
-
-* `npm test` – Run Jest tests (`NODE_ENV=test`)
-* `npm run test:watch` – Watch mode for tests
-* `npm run test:coverage` – Generate coverage report
-
-### 🧹 Code Quality
-
-* `npm run lint` – Run ESLint
-* `npm run lint:fix` – Auto-fix lint errors
-
-### 🗄️ Prisma / Database
-
-* `npm run prisma:generate` – Generate Prisma client
-* `npm run prisma:migrate` – Apply new migrations (dev)
-* `npm run prisma:migrate:prod` – Apply migrations in prod
-* `npm run prisma:migrate:staging` – Apply migrations in staging
-* `npm run prisma:deploy` – Deploy pending migrations (safe for CI/CD)
-* `npm run prisma:studio` – Launch Prisma Studio (DB UI)
-* `npm run prisma:seed` – Seed DB (development)
-* `npm run prisma:seed:staging` – Seed DB in staging
-* `npm run prisma:reset` – Reset DB & re-apply migrations (⚠️ destructive)
-
-### 🌍 Environment Utilities
-
-* `npm run env:check` – Show current `NODE_ENV`
-* `npm run env:dev` – Echo switch to development
-* `npm run env:staging` – Echo switch to staging
-* `npm run env:prod` – Echo switch to production
-
----
-
-## 📚 Documentation
-
-* [README.md](./README.md) – Project overview & setup
-* [md/API.md](./md/API.md) – API documentation
-* [md/DEVELOPMENT.md](./md/DEVELOPMENT.md) – Development guide
-* [md/DEPLOYMENT.md](./md/DEPLOYMENT.md) – Deployment guide
-
----
-
-✅ Setup completed successfully!
-Next steps:
-
-1. Edit **Private.env**
-2. Ensure MongoDB is running
-3. Run Prisma migrations & seeds
-4. Start dev server with `npm run dev`
-5. Build & deploy when ready 🚀
-
----
-
-Do you want me to **replace your existing README.md file** with this refactored one so it’s ready to commit, or should I just give you a patch section you can paste?
+New features should follow the module pattern under `src/modules/<name>/` (router, controller, service, dao, validator, dto as needed).

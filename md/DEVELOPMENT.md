@@ -1,23 +1,23 @@
-# Development Guide
+# LeadFlow API — Development Guide
 
-This guide provides comprehensive information for developers working on the Express TypeScript Boilerplate.
+This guide covers local setup, project layout, and practices for developing the LeadFlow backend.
 
-## 🛠️ Development Setup
+## Development setup
 
 ### Prerequisites
 
 - Node.js (v18 or higher)
 - npm or yarn
-- MongoDB (local or cloud instance)
+- Database (as defined in `prisma/schema.prisma`; e.g. PostgreSQL or MongoDB)
 - Git
 
-### Initial Setup
+### Initial setup
 
 1. **Clone the repository**
 
    ```bash
    git clone <repository-url>
-   cd express-typescript-boilerplate
+   cd api-LeadFlow
    ```
 
 2. **Install dependencies**
@@ -26,440 +26,135 @@ This guide provides comprehensive information for developers working on the Expr
    npm install
    ```
 
-3. **Set up environment variables**
+3. **Environment variables**
+
+   Copy the example env file and set variables (database URL, JWT secrets, internal service key, etc.). See `md/Env/ENVIRONMENT_SETUP_COMPLETE.md` for a full list.
 
    ```bash
    cp .env.example Private.env
-   # Edit Private.env with your configuration
+   # Edit Private.env
    ```
 
-4. **Set up the database**
+4. **Database**
 
    ```bash
-   # Generate Prisma client
    npm run prisma:generate
-
-   # Run database migrations
    npm run prisma:migrate
+   # Optional: npm run prisma:seed
    ```
 
 5. **Start development server**
 
    ```bash
    npm run dev
-
    ```
 
-   ts-node-dev → Runs TypeScript files directly in development with auto-restart on file changes (like nodemon for TS).
+   This runs `dev:db` (Prisma db push) then `dev:start`. The dev server uses `ts-node-dev` with `--respawn` and `--transpile-only` for fast restarts; path aliases are loaded via `tsconfig-paths/register`. Entry point is `src/server.ts`.
 
---respawn → Restarts the process automatically if it crashes or exits.
+## Project architecture
 
---transpile-only → Skips type checking, only transpiles TS → JS for faster startup and reload.
-
--r tsconfig-paths/register → Loads path aliases from tsconfig.json (so @utils/\* imports work at runtime).
-
-src/server.ts → The entry file for your server (the main application starting point).
-
-## 📁 Project Architecture
-
-### Folder Structure
+### Folder structure
 
 ```
 src/
-├── config/           # Configuration files
-│   └── database.ts   # Database configuration
-├── constants/        # Application constants
-│   └── Global.constants.ts
-├── controllers/      # Route controllers
-│   └── Auth.controller.ts
-├── dao/             # Data Access Objects
-│   └── Auth.dao.ts
-├── db/              # Database configuration
-│   └── prisma.ts    # Prisma client
-├── interfaces/      # Data Transfer Objects
-│   └── Auth.dto.ts
-├── logger/          # Winston logging replica
-│   └── logger.ts
-├── middleware/      # Express middleware
-│   └── IsLoggedIn.ts
-├── routes/          # Route definitions
-│   ├── index.ts
-│   └── Auth.router.ts
-├── services/        # Business logic
-│   └── Auth.service.ts
-├── types/           # TypeScript types
-│   └── index.ts
-├── utils/           # Utility functions
-└── validators/      # Request validation
-    └── Auth.validator.ts
+├── app.ts                 # Express app, middleware, route registration at /api/v1
+├── server.ts              # Entry point
+├── config/                # Environment and app config
+├── constants/             # Global constants (e.g. Global.constants)
+├── db/                    # Prisma client instance
+├── modules/               # Feature modules
+│   ├── auth/              # Auth router, controller, service, dao, validator, dto
+│   ├── leads/
+│   ├── templates/
+│   ├── campaigns/
+│   ├── conversations/
+│   ├── webhooks/
+│   └── admin/
+├── routes/                # Top-level route aggregation
+│   └── Index.routes.ts    # Mounts health, internal, and module routers under /api/v1
+├── shared/                # Shared middleware and helpers
+│   ├── middleware/        # validateRequest, IsLoggedIn, requireRole, rateLimiter
+│   └── helpers/           # response.helper, paginate.helper, etc.
+├── controllers/           # Legacy auth controller (deprecated; use modules/auth)
+├── dao/                   # Legacy auth DAO
+├── services/              # Legacy auth service
+├── validators/            # Legacy validators
+├── utils/                 # Utilities (e.g. ErrorHandler)
+├── interfaces/
+└── types/
+prisma/
+├── schema.prisma
+└── migrations/
 ```
 
-### Architecture Patterns
+### Conventions
 
-#### 1. Layered Architecture
+- **Controllers:** Handle HTTP only; delegate to services; use `success()` and `error()` from `response.helper`; log at method entry with `global.logger.info` and `methodName`, `fileName`, and relevant params.
+- **Services:** Business logic; call DAOs and shared helpers; throw errors for the controller to map to status codes.
+- **DAOs:** Database access only; use Prisma; no business rules.
+- **Validators:** Joi schemas with `.message()` on rules; used by `validateRequest(schema, source)` middleware (body/query/params).
+- **Imports:** Grouped with comments (Express, module deps, helpers, DTOs, etc.). No emoji in code or docs.
 
-- **Controllers**: Handle HTTP requests and responses
-- **Services**: Contain business logic
-- **DAO (Data Access Objects)**: Handle database operations
-- **DTOs (Data Transfer Objects)**: Structure data for API responses
+New features should live under `src/modules/<name>/` with router, controller, service, dao, validator, and dto as needed.
 
-#### 2. Dependency Injection
+## Scripts
 
-- Services are injected into controllers
-- DAOs are injected into services
-- Singleton pattern for database connections
+| Script | Description |
+|--------|-------------|
+| `npm run dev` | DB push + dev server with hot reload |
+| `npm run build` | Compile TypeScript to `dist/` |
+| `npm start` | Run compiled app |
+| `npm run prisma:generate` | Generate Prisma client |
+| `npm run prisma:migrate` | Apply migrations (dev) |
+| `npm run prisma:studio` | Open Prisma Studio |
+| `npm run prisma:reset` | Reset DB and re-apply migrations (destructive) |
+| `npm run lint` | Run ESLint |
+| `npm run lint:fix` | ESLint with auto-fix |
+| `npm test` | Run tests |
 
-#### 3. Error Handling
+## TypeScript and ESLint
 
-- Centralized error handling middleware
-- Custom error classes for different error types
-- Proper HTTP status codes
+The project uses strict TypeScript (`strict`, `noImplicitAny`, `strictNullChecks`, etc.) and path aliases (e.g. `@/modules/*`, `@/shared/*`). Run `npm run lint` before committing; fix issues with `npm run lint:fix`.
 
-## 🔧 Development Tools
+## Testing
 
-### TypeScript Configuration
+Tests live under `test/` (unit, integration, fixtures as applicable). Use `npm test`, `npm run test:watch`, and `npm run test:coverage`. When writing tests, use the same response shape as the API: `{ success: true, data, meta }` for success and `{ success: false, error }` for errors.
 
-The project uses strict TypeScript configuration:
+## Database (Prisma)
 
-```json
-{
-  "compilerOptions": {
-    "strict": true,
-    "noImplicitAny": true,
-    "strictNullChecks": true,
-    "strictFunctionTypes": true,
-    "noImplicitThis": true,
-    "noImplicitReturns": true
-  }
-}
-```
+- Schema: `prisma/schema.prisma`. After editing, run `npm run prisma:generate` and create/apply migrations as needed.
+- Migrations: `npm run prisma:migrate` (dev); use the appropriate script for staging/prod (e.g. `prisma:migrate:prod`).
+- GUI: `npm run prisma:studio`.
 
-### ESLint Configuration
+See **md/PRISMA.md** for schema details and conventions.
 
-Code quality is enforced through ESLint:
+## Logging
+
+The app uses a global logger (e.g. `global.logger`). Use it at the start of each controller/service/dao method with a short message and a context object: `methodName`, `fileName`, and relevant identifiers (userId, id, etc.). Levels: info for normal flow, error for failures.
+
+## Authentication (JWT)
+
+Auth uses access tokens (short-lived) and refresh tokens (longer-lived). Login and signup return both; the client sends the access token in `Authorization: Bearer <token>`. Refresh is done via `POST /api/v1/auth/refresh` with `refreshToken` in the body. Protected routes use `isLoggedIn` middleware; admin routes also use `requireRole(['ADMIN'])`.
+
+## Building for production
 
 ```bash
-# Run linting
-npm run lint
-
-# Fix linting errors
-npm run lint:fix
-```
-
-### Prettier (Optional)
-
-Consider adding Prettier for code formatting:
-
-```bash
-npm install --save-dev prettier
-```
-
-## 🧪 Testing
-
-### Test Structure
-
-```
-test/
-├── unit/           # Unit tests
-├── integration/    # Integration tests
-└── fixtures/       # Test data
-```
-
-### Running Tests
-
-```bash
-# Run all tests
-npm test
-
-# Run tests in watch mode
-npm run test:watch
-
-# Run tests with coverage
-npm run test:coverage
-```
-
-### Writing Tests
-
-Example test structure:
-
-```typescript
-import request from 'supertest';
-import app from '../src/app';
-
-describe('Auth Controller', () => {
-  describe('POST /auth', () => {
-    it('should create a new user', async () => {
-      const userData = {
-        email: 'test@example.com',
-        name: 'Test User',
-        age: 25,
-        city: 'Test City',
-        zipCode: '12345',
-      };
-
-      const response = await request(app)
-        .post('/auth')
-        .send(userData)
-        .expect(201);
-
-      expect(response.body.success).toBe(true);
-      expect(response.body.data.user.email).toBe(userData.email);
-    });
-  });
-});
-```
-
-## 🗄️ Database Development
-
-### Prisma Schema
-
-The database schema is defined in `prisma/schema.prisma`:
-
-```prisma
-model User {
-  id        String   @id @default(auto()) @map("_id") @db.ObjectId
-  email     String   @unique
-  name      String
-  age       Int
-  city      String
-  zipCode   String
-  isDeleted Boolean  @default(false)
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-
-  @@map("users")
-}
-```
-
-### Database Operations
-
-```bash
-# Generate Prisma client after schema changes
-npm run prisma:generate
-
-# Create and apply migrations
-npm run prisma:migrate
-
-# Open Prisma Studio (database GUI)
-npm run prisma:studio
-
-# Reset database
-npm run prisma:reset
-```
-
-### Adding New Models
-
-1. Add model to `prisma/schema.prisma`
-2. Run `npm run prisma:generate`
-3. Create migration: `npm run prisma:migrate`
-4. Update types in `src/types/index.ts`
-5. Create DAO, Service, and Controller
-
-## 📝 Logging
-
-### Logger Configuration
-
-The application uses Logger for logging with multiple transports:
-
-- **Console**: Colored output for development
-- **File**: Rotating log files
-- **Error**: Separate error logs
-
-### Log Levels
-
-- `error`: Error messages
-- `warn`: Warning messages
-- `info`: Informational messages
-- `http`: HTTP request logs
-- `debug`: Debug messages
-
-### Using the Logger
-
-```typescript
-import logger from '../logger/logger';
-
-// Basic logging
-logger.info('User created successfully');
-logger.error('Database connection failed');
-
-// Structured logging
-logger.info('User action', {
-  fileName: __filename,
-  methodName: 'createUser',
-  variables: { userId: '123', email: 'user@example.com' },
-});
-```
-
-## 🔐 Authentication Development
-
-### JWT Implementation
-
-The application uses JWT for authentication:
-
-```typescript
-// Generate token
-const token = jwt.sign({ userId: user.id }, process.env.PRIVATE_TOKEN_KEY, {
-  expiresIn: '1h',
-});
-
-// Verify token
-const decoded = jwt.verify(token, process.env.PRIVATE_TOKEN_KEY);
-```
-
-### Middleware Usage
-
-```typescript
-import { isLoggedIn } from '../middleware/IsLoggedIn';
-
-// Protect routes
-router.get('/protected', isLoggedIn, controller.protectedMethod);
-```
-
-## 🚀 Performance Considerations
-
-### Database Optimization
-
-- Use Prisma's `select` to limit returned fields
-- Implement pagination for large datasets
-- Use database indexes for frequently queried fields
-- Consider connection pooling
-
-### Memory Management
-
-- Monitor memory usage in production
-- Implement proper error handling to prevent memory leaks
-- Use streaming for large file operations
-
-### Caching
-
-Consider implementing caching for:
-
-- Frequently accessed data
-- Database query results
-- API responses
-
-## 🔍 Debugging
-
-### Development Tools
-
-1. **VS Code Extensions**:
-
-   - TypeScript and JavaScript Language Features
-   - ESLint
-   - Prettier
-   - REST Client
-
-2. **Debugging Setup**:
-   ```json
-   {
-     "type": "node",
-     "request": "launch",
-     "name": "Debug Server",
-     "program": "${workspaceFolder}/src/server.ts",
-     "runtimeArgs": ["-r", "ts-node/register"],
-     "env": {
-       "NODE_ENV": "development"
-     }
-   }
-   ```
-
-### Common Issues
-
-1. **TypeScript Errors**:
-
-   - Check type definitions
-   - Ensure proper imports
-   - Verify interface implementations
-
-2. **Database Connection**:
-
-   - Verify MongoDB is running
-   - Check connection string
-   - Ensure Prisma client is generated
-
-3. **Environment Variables**:
-   - Verify `.env` file exists
-   - Check variable names and values
-   - Ensure proper loading order
-
-## 📦 Building for Production
-
-### Build Process
-
-```bash
-# Build TypeScript
 npm run build
-
-# Start production server
 npm start
 ```
 
-### Environment Variables
+Set `NODE_ENV=production` and all required env vars (database URL, JWT secrets, CORS, etc.) in the deployment environment.
 
-Ensure all production environment variables are set:
+## Git workflow
 
-```env
-NODE_ENV=production
-PORT=3001
-MONGO_URI=mongodb://production-db:27017
-DB_NAME=production_db
-PRIVATE_TOKEN_KEY=your-secure-secret
-```
+- Use feature/bugfix/hotfix branches as needed.
+- Prefer clear commit messages (e.g. feat, fix, docs, refactor).
+- Run lint and tests before opening a pull request.
 
-## 🔄 Git Workflow
+## Documentation
 
-### Branch Naming
-
-- `feature/feature-name` - New features
-- `bugfix/bug-description` - Bug fixes
-- `hotfix/urgent-fix` - Critical fixes
-- `refactor/refactor-description` - Code refactoring
-
-### Commit Messages
-
-Follow conventional commit format:
-
-```
-feat: add user authentication
-fix: resolve database connection issue
-docs: update API documentation
-refactor: improve error handling
-test: add unit tests for auth service
-```
-
-### Pull Request Process
-
-1. Create feature branch
-2. Make changes with tests
-3. Run linting and tests
-4. Create pull request
-5. Code review
-6. Merge to main
-
-## 📚 Additional Resources
-
-- [TypeScript Handbook](https://www.typescriptlang.org/docs/)
-- [Prisma Documentation](https://www.prisma.io/docs/)
-- [Express.js Guide](https://expressjs.com/en/guide/routing.html)
-- [Jest Testing](https://jestjs.io/docs/getting-started)
-
-## 🤝 Contributing
-
-1. Fork the repository
-2. Create a feature branch
-3. Make your changes
-4. Add tests
-5. Run linting and tests
-6. Submit a pull request
-
-## 📞 Support
-
-For questions or issues:
-
-- Create an issue on GitHub
-- Contact the development team
-- Check the documentation
-
----
-
-**Happy Coding! 🎉**
+- **md/README.md** — Doc index
+- **md/API.md** — API reference
+- **md/LeadFlow_Frontend_Docs.md** — Frontend architecture
+- **md/PRISMA.md** — Database
+- **md/Workflow/DEPLOYMENT.md** — Deployment

@@ -1,356 +1,483 @@
-# API Documentation
+# LeadFlow API Documentation
 
-This document provides comprehensive API documentation for the Express TypeScript Boilerplate.
+This document describes the HTTP API for the LeadFlow backend. All public routes are prefixed with `/api/v1`.
 
 ## Base URL
 
-```
-Development: http://localhost:3001
-Production: https://your-domain.com
-```
+- Development: `http://localhost:3001` (or your configured port)
+- Production: `https://your-api-domain.com`
+
+All endpoints below are relative to the base URL. Example: `POST /api/v1/auth/login` means `POST {BASE_URL}/api/v1/auth/login`.
 
 ## Authentication
 
-Most endpoints require JWT authentication. Include the token in the Authorization header:
+Most endpoints require a valid JWT access token. Send it in the `Authorization` header:
 
 ```
-Authorization: Bearer <your-jwt-token>
+Authorization: Bearer <access-token>
 ```
 
-## Response Format
+Token refresh uses a refresh token (e.g. in body or httpOnly cookie depending on client setup). See Auth section.
 
-All API responses follow a consistent format:
+## Response format
 
-### Success Response
+### Success
+
 ```json
 {
   "success": true,
-  "message": "Operation completed successfully",
-  "data": { ... }
+  "data": { ... },
+  "meta": { ... }
 }
 ```
 
-### Error Response
+- `data`: Response payload. Omitted for some success responses.
+- `meta`: Optional. Used for pagination: `total`, `page`, `limit`.
+
+### Error
+
 ```json
 {
   "success": false,
-  "message": "Error description",
-  "error": "Detailed error message",
-  "details": ["Validation error 1", "Validation error 2"]
+  "error": "Human-readable error message"
 }
 ```
 
-## Endpoints
+### Validation error (422)
 
-### Health Check
+When request validation fails (Joi), the response is:
 
-#### GET /health
-Check if the server is running.
-
-**Response:**
 ```json
 {
-  "success": true,
-  "message": "Server is running",
-  "timestamp": "2024-01-01T00:00:00.000Z",
-  "uptime": 123.456
+  "success": false,
+  "error": "Validation failed",
+  "details": ["Field message 1", "Field message 2"]
 }
 ```
+
+## HTTP status codes
+
+| Code | Meaning |
+|------|--------|
+| 200 | OK |
+| 201 | Created |
+| 400 | Bad Request (business rule or invalid input) |
+| 401 | Unauthorized (missing or invalid token) |
+| 403 | Forbidden (e.g. not admin) |
+| 404 | Not Found |
+| 409 | Conflict (e.g. email already registered) |
+| 422 | Unprocessable Entity (validation failed) |
+| 500 | Internal Server Error |
 
 ---
 
-## User Management
+## Health
 
-### Create User
+### GET /api/v1/health
 
-#### POST /auth
-Create a new user account.
+Public. Returns server status.
 
-**Request Body:**
-```json
-{
-  "email": "user@example.com",
-  "name": "John Doe",
-  "age": 25,
-  "city": "New York",
-  "zipCode": "10001"
-}
-```
+**Response (200):**
 
-**Validation Rules:**
-- `email`: Valid email address (required)
-- `name`: 2-50 characters (required)
-- `age`: Integer between 1-120 (required)
-- `city`: 2-50 characters (required)
-- `zipCode`: Valid US zip code format (required)
-
-**Success Response (201):**
 ```json
 {
   "success": true,
-  "message": "User created successfully",
   "data": {
-    "user": {
-      "id": "507f1f77bcf86cd799439011",
-      "email": "user@example.com",
-      "name": "John Doe",
-      "age": 25,
-      "city": "New York",
-      "zipCode": "10001",
-      "createdAt": "2024-01-01T00:00:00.000Z",
-      "updatedAt": "2024-01-01T00:00:00.000Z"
-    },
-    "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+    "status": "ok",
+    "timestamp": "2024-01-01T00:00:00.000Z",
+    "uptime": 123.456
   }
 }
 ```
 
-**Error Responses:**
-- `400` - Validation error
-- `409` - User already exists
-- `500` - Internal server error
+---
+
+## Auth
+
+Base path: `/api/v1/auth`. All auth routes use rate limiting; login and forgot-password use stricter limits.
+
+### POST /api/v1/auth/signup
+
+Create a new account. Body (all required): `email`, `name`, `password`, `corporationName`. Validation: email format; name length; password length; corporation name length.
+
+**Response (201):** `{ success: true, data: { tokens: { accessToken, refreshToken }, user: MeResponse } }`
+
+**Errors:** 400 (validation), 409 (email already registered).
+
+### POST /api/v1/auth/login
+
+Body: `email`, `password`.
+
+**Response (200):** `{ success: true, data: { tokens: { accessToken, refreshToken }, user: MeResponse } }`
+
+**Errors:** 401 (invalid credentials).
+
+### POST /api/v1/auth/refresh
+
+Body: `refreshToken`. Returns new access token.
+
+**Response (200):** `{ success: true, data: { accessToken } }`
+
+**Errors:** 401 (invalid or expired refresh token).
+
+### POST /api/v1/auth/logout
+
+Requires authentication. Invalidates refresh token for the current user.
+
+**Response (200):** `{ success: true, data: { message: "Logged out successfully" } }`
+
+### GET /api/v1/auth/me
+
+Requires authentication. Returns current user profile (id, email, name, role, isVerified, tokenBalance, corporationId, createdAt, updatedAt).
+
+**Response (200):** `{ success: true, data: MeResponse }`
+
+**Errors:** 404 (user not found).
+
+### POST /api/v1/auth/verify-email/:token
+
+Public. Verifies email using the token from the verification link.
+
+**Response (200):** `{ success: true, data: { message: "Email verified successfully" } }`
+
+**Errors:** 400 (invalid or expired token).
+
+### POST /api/v1/auth/resend-verification
+
+Body: `email`. Sends a new verification email if the account exists and is not verified.
+
+**Response (200):** `{ success: true, data: { message: "Verification email sent if account exists" } }`
+
+### POST /api/v1/auth/forgot-password
+
+Body: `email`. Sends a password reset email if the account exists. Does not reveal whether the email exists.
+
+**Response (200):** `{ success: true, data: { message: "Reset email sent if account exists" } }`
+
+### POST /api/v1/auth/reset-password
+
+Body: `token`, `password`. Resets password using the token from the reset email.
+
+**Response (200):** `{ success: true, data: { message: "Password reset successfully" } }`
+
+**Errors:** 400 (invalid or expired token).
 
 ---
 
-### Get All Users
+## Leads
 
-#### GET /auth
-Retrieve all users (requires authentication).
+Base path: `/api/v1/leads`. All endpoints require authentication and are rate-limited.
 
-**Headers:**
-```
-Authorization: Bearer <jwt-token>
-```
+### GET /api/v1/leads
 
-**Success Response (200):**
-```json
-{
-  "success": true,
-  "message": "Users retrieved successfully",
-  "data": [
-    {
-      "id": "507f1f77bcf86cd799439011",
-      "email": "user@example.com",
-      "name": "John Doe",
-      "age": 25,
-      "city": "New York",
-      "zipCode": "10001",
-      "createdAt": "2024-01-01T00:00:00.000Z",
-      "updatedAt": "2024-01-01T00:00:00.000Z"
-    }
-  ]
-}
-```
+List lead requests for the current user. Query: `page`, `limit` (or equivalent for pagination).
 
-**Error Responses:**
-- `401` - Unauthorized (missing or invalid token)
-- `500` - Internal server error
+**Response (200):** `{ success: true, data: LeadRequest[], meta: { total, page, limit } }`
 
----
+### POST /api/v1/leads/upload
 
-### Get User by ID
+Create a lead request via file upload. Content-Type: `multipart/form-data`. Body must include list metadata (e.g. listName, industry, description) and the file. File is stored and processed asynchronously.
 
-#### GET /auth/:userId
-Retrieve a specific user by ID (requires authentication).
+**Response (201):** `{ success: true, data: LeadRequest }`
 
-**Parameters:**
-- `userId` (string, required) - User ID
+**Errors:** 400 (e.g. no file, validation).
 
-**Headers:**
-```
-Authorization: Bearer <jwt-token>
-```
+### POST /api/v1/leads/link
 
-**Success Response (200):**
-```json
-{
-  "success": true,
-  "message": "User retrieved successfully",
-  "data": {
-    "id": "507f1f77bcf86cd799439011",
-    "email": "user@example.com",
-    "name": "John Doe",
-    "age": 25,
-    "city": "New York",
-    "zipCode": "10001",
-    "createdAt": "2024-01-01T00:00:00.000Z",
-    "updatedAt": "2024-01-01T00:00:00.000Z"
-  }
-}
-```
+Create a lead request via URL. Body: `listName`, `industry`, `description` (optional), `fileUrl` (required, valid URI). Validates against allowed industries.
 
-**Error Responses:**
-- `401` - Unauthorized (missing or invalid token)
-- `404` - User not found
-- `500` - Internal server error
+**Response (201):** `{ success: true, data: LeadRequest }`
+
+**Errors:** 400 (validation).
+
+### GET /api/v1/leads/:id
+
+Get a single lead request by id (must belong to current user).
+
+**Response (200):** `{ success: true, data: LeadRequest }`
+
+**Errors:** 404.
+
+### GET /api/v1/leads/:id/file
+
+Get a signed URL to download the original file for the lead request.
+
+**Response (200):** `{ success: true, data: { url } }`
+
+**Errors:** 404.
+
+### GET /api/v1/leads/:id/leads
+
+List parsed leads for the lead request. Query: pagination params.
+
+**Response (200):** `{ success: true, data: Lead[], meta: { total, page, limit } }`
+
+**Errors:** 404.
+
+### DELETE /api/v1/leads/:id
+
+Soft-delete the lead request (must belong to current user).
+
+**Response (200):** `{ success: true, data: { message: "Lead request deleted" } }`
+
+**Errors:** 404.
 
 ---
 
-### Update User
+## Templates
 
-#### PUT /auth/:userId
-Update a user's information (requires authentication).
+Base path: `/api/v1/templates`. All endpoints require authentication.
 
-**Parameters:**
-- `userId` (string, required) - User ID
+### GET /api/v1/templates
 
-**Headers:**
-```
-Authorization: Bearer <jwt-token>
-```
+List templates for the current user. Query: pagination.
 
-**Request Body:**
-```json
-{
-  "email": "newemail@example.com",
-  "name": "Jane Doe",
-  "age": 30,
-  "city": "Los Angeles",
-  "zipCode": "90210"
-}
-```
+**Response (200):** `{ success: true, data: Template[], meta }`
 
-**Validation Rules:**
-- All fields are optional for updates
-- Same validation rules as create user apply to provided fields
+### POST /api/v1/templates
 
-**Success Response (200):**
-```json
-{
-  "success": true,
-  "message": "User updated successfully",
-  "data": {
-    "id": "507f1f77bcf86cd799439011",
-    "email": "newemail@example.com",
-    "name": "Jane Doe",
-    "age": 30,
-    "city": "Los Angeles",
-    "zipCode": "90210",
-    "createdAt": "2024-01-01T00:00:00.000Z",
-    "updatedAt": "2024-01-01T12:00:00.000Z"
-  }
-}
-```
+Create a template. Body: `productName`, `description`, `targetAudience` (optional), `tone` (optional), `cta` (optional). Validation: min/max lengths; tone from allowed set.
 
-**Error Responses:**
-- `400` - Validation error
-- `401` - Unauthorized (missing or invalid token)
-- `404` - User not found
-- `500` - Internal server error
+**Response (201):** `{ success: true, data: Template }`
 
----
+**Errors:** 400 (validation).
 
-### Delete User
+### GET /api/v1/templates/:id
 
-#### DELETE /auth/:userId
-Soft delete a user (requires authentication).
+Get a template by id (must belong to current user).
 
-**Parameters:**
-- `userId` (string, required) - User ID
+**Response (200):** `{ success: true, data: Template }`
 
-**Headers:**
-```
-Authorization: Bearer <jwt-token>
-```
+**Errors:** 404.
 
-**Success Response (200):**
-```json
-{
-  "success": true,
-  "message": "User deleted successfully"
-}
-```
+### PATCH /api/v1/templates/:id
 
-**Error Responses:**
-- `401` - Unauthorized (missing or invalid token)
-- `404` - User not found
-- `500` - Internal server error
+Update a template. Only templates in DRAFT status can be updated. Body: same fields as create, all optional.
+
+**Response (200):** `{ success: true, data: Template }`
+
+**Errors:** 400 (e.g. not DRAFT), 404.
+
+### DELETE /api/v1/templates/:id
+
+Delete a template (must belong to current user).
+
+**Response (200):** `{ success: true, data: { message: "Template deleted" } }`
+
+**Errors:** 404.
+
+### POST /api/v1/templates/:id/preview
+
+Generate and store a sample preview (email + WhatsApp) for the template. Returns the generated content.
+
+**Response (200):** `{ success: true, data: { emailSubject, emailBody, whatsApp } }`
+
+**Errors:** 400, 404.
+
+### POST /api/v1/templates/:id/launch
+
+Launch a campaign from the template. Body: `name` (campaign name), `leadListIds` (array of lead request ids, min one). Template is set to ACTIVE and a campaign is created.
+
+**Response (201):** `{ success: true, data: Campaign }`
+
+**Errors:** 400 (validation), 404.
 
 ---
 
-## Error Codes
+## Campaigns
 
-| Status Code | Description |
-|-------------|-------------|
-| 200 | OK - Request successful |
-| 201 | Created - Resource created successfully |
-| 400 | Bad Request - Invalid request data |
-| 401 | Unauthorized - Authentication required |
-| 403 | Forbidden - Access denied |
-| 404 | Not Found - Resource not found |
-| 409 | Conflict - Resource already exists |
-| 500 | Internal Server Error - Server error |
+Base path: `/api/v1/campaigns`. All endpoints require authentication.
 
-## Rate Limiting
+### GET /api/v1/campaigns
 
-Currently, no rate limiting is implemented. Consider implementing rate limiting for production use.
+List campaigns for the current user. Query: pagination.
+
+**Response (200):** `{ success: true, data: Campaign[], meta }`
+
+### GET /api/v1/campaigns/:id
+
+Get a campaign by id (must belong to current user).
+
+**Response (200):** `{ success: true, data: Campaign }`
+
+**Errors:** 404.
+
+### PATCH /api/v1/campaigns/:id/pause
+
+Pause a running campaign. Only RUNNING campaigns can be paused.
+
+**Response (200):** `{ success: true, data: Campaign }`
+
+**Errors:** 400 (not running), 404.
+
+### PATCH /api/v1/campaigns/:id/resume
+
+Resume a paused campaign. Only PAUSED campaigns can be resumed.
+
+**Response (200):** `{ success: true, data: Campaign }`
+
+**Errors:** 400 (not paused), 404.
+
+### GET /api/v1/campaigns/:id/logs
+
+Get engagement logs for the campaign. Query: pagination.
+
+**Response (200):** `{ success: true, data: EngagementLog[], meta }`
+
+**Errors:** 404.
+
+### GET /api/v1/campaigns/:id/hot-leads
+
+Get hot-lead conversations for the campaign. Query: pagination.
+
+**Response (200):** `{ success: true, data: Conversation[], meta }`
+
+**Errors:** 404.
+
+---
+
+## Conversations
+
+Base path: `/api/v1/conversations`. All endpoints require authentication.
+
+### GET /api/v1/conversations
+
+List conversations for the current user. Query: pagination.
+
+**Response (200):** `{ success: true, data: Conversation[], meta }`
+
+### GET /api/v1/conversations/:id
+
+Get a conversation by id including lead and messages (must belong to current user).
+
+**Response (200):** `{ success: true, data: Conversation }`
+
+**Errors:** 404.
+
+### POST /api/v1/conversations/:id/reply
+
+Send a reply. Body: `content` (string, 1–4000 chars), `channel` (`EMAIL` or `WHATSAPP`). Message is sent via the chosen channel and stored as an outbound message.
+
+**Response (201):** `{ success: true, data: Message }`
+
+**Errors:** 400 (validation or no contact for channel), 404.
+
+---
+
+## Webhooks
+
+Base path: `/api/v1/webhooks`. Used by external providers (Resend, WhatsApp). Rate limiting applies; no JWT required for incoming webhook calls.
+
+### POST /api/v1/webhooks/email-reply
+
+Inbound email reply webhook (e.g. Resend). Optional HMAC verification via header when configured. Body format is provider-specific.
+
+**Response (200):** `{ success: true, data: { received: true } }`
+
+### POST /api/v1/webhooks/wa-reply
+
+Inbound WhatsApp reply webhook. Body format is provider-specific (e.g. Meta webhook payload).
+
+**Response (200):** `{ success: true, data: { received: true } }`
+
+### GET /api/v1/webhooks/wa-verify
+
+WhatsApp webhook subscription verification. Query: `hub.mode`, `hub.verify_token`, `hub.challenge`. Returns the challenge when token matches.
+
+**Response (200):** Plain text challenge, or 403 if verification fails.
+
+### POST /api/v1/webhooks/wa-verify
+
+Acknowledges WhatsApp webhook delivery.
+
+**Response (200):** `{ success: true, data: { received: true } }`
+
+---
+
+## Admin
+
+Base path: `/api/v1/admin`. All endpoints require authentication and the `ADMIN` role. Rate limiting applies.
+
+### GET /api/v1/admin/users
+
+List all users (non-deleted). Query: pagination.
+
+**Response (200):** `{ success: true, data: User[], meta }`
+
+### GET /api/v1/admin/users/:id
+
+Get a user by id.
+
+**Response (200):** `{ success: true, data: User }`
+
+**Errors:** 404.
+
+### PATCH /api/v1/admin/users/:id/tokens
+
+Update a user's token balance. Body: `tokenBalance` (number, non-negative integer).
+
+**Response (200):** `{ success: true, data: User }`
+
+**Errors:** 400 (validation), 404.
+
+### PATCH /api/v1/admin/users/:id/suspend
+
+Suspend or unsuspend a user. Body: `suspend` (boolean).
+
+**Response (200):** `{ success: true, data: User }`
+
+**Errors:** 400, 404.
+
+### DELETE /api/v1/admin/users/:id
+
+Soft-delete a user.
+
+**Response (200):** `{ success: true, data: { message: "User deleted" } }`
+
+**Errors:** 404.
+
+### GET /api/v1/admin/lead-requests
+
+List all lead requests. Query: pagination.
+
+**Response (200):** `{ success: true, data: LeadRequest[], meta }`
+
+### GET /api/v1/admin/campaigns
+
+List all campaigns. Query: pagination.
+
+**Response (200):** `{ success: true, data: Campaign[], meta }`
+
+### GET /api/v1/admin/stats
+
+Aggregate platform statistics (e.g. total users, lead requests, campaigns, leads).
+
+**Response (200):** `{ success: true, data: { totalUsers, totalLeadRequests, totalCampaigns, totalLeads } }`
+
+---
+
+## Internal endpoints
+
+These routes are for server-to-server callbacks (e.g. lead parsing service). They require header `x-service-key` to match `INTERNAL_SERVICE_KEY`. Not for use by the frontend.
+
+### POST /api/v1/internal/leads/parsed
+
+Body: `leadRequestId`, `leads` (array), `totalCount`, `dupCount`. Updates the lead request status to DONE and stores parsed leads.
+
+**Response (200):** `{ success: true, data: { updated: true } }`
+
+### POST /api/v1/internal/leads/failed
+
+Body: `leadRequestId`. Sets the lead request status to FAILED.
+
+**Response (200):** `{ success: true, data: { updated: true } }`
+
+---
+
+## Rate limiting
+
+Auth endpoints use rate limiters (signup, login, refresh, etc.). Stricter limits apply to login and forgot-password. API routes under `/api/v1/leads`, `/api/v1/templates`, etc. use a general API rate limiter. Webhooks use a dedicated webhook rate limiter. Exceeding limits returns 429 (or the configured behaviour).
 
 ## CORS
 
-The API supports CORS with configurable origins. In development, all origins are allowed. In production, configure allowed origins via the `ALLOWED_ORIGINS` environment variable.
-
-## Pagination
-
-Pagination is not currently implemented. Consider adding pagination for endpoints that return multiple resources.
-
-## Filtering and Sorting
-
-Filtering and sorting are not currently implemented. Consider adding query parameters for these features.
-
-## Examples
-
-### Using cURL
-
-**Create a user:**
-```bash
-curl -X POST http://localhost:3001/auth \
-  -H "Content-Type: application/json" \
-  -d '{
-    "email": "user@example.com",
-    "name": "John Doe",
-    "age": 25,
-    "city": "New York",
-    "zipCode": "10001"
-  }'
-```
-
-**Get all users:**
-```bash
-curl -X GET http://localhost:3001/auth \
-  -H "Authorization: Bearer <your-jwt-token>"
-```
-
-### Using JavaScript/Fetch
-
-**Create a user:**
-```javascript
-const response = await fetch('http://localhost:3001/auth', {
-  method: 'POST',
-  headers: {
-    'Content-Type': 'application/json',
-  },
-  body: JSON.stringify({
-    email: 'user@example.com',
-    name: 'John Doe',
-    age: 25,
-    city: 'New York',
-    zipCode: '10001'
-  })
-});
-
-const data = await response.json();
-console.log(data);
-```
-
-**Get all users:**
-```javascript
-const response = await fetch('http://localhost:3001/auth', {
-  method: 'GET',
-  headers: {
-    'Authorization': 'Bearer <your-jwt-token>'
-  }
-});
-
-const data = await response.json();
-console.log(data);
-```
+CORS is configured per environment. Allowed origins and methods are set via application config; in production, restrict origins appropriately.
