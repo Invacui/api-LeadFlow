@@ -16,19 +16,19 @@ export const createByLinkSchema = Joi.object({
     .min(2)
     .max(100)
     .required()
-    .message('List name must be between 2 and 100 characters long'),
+    .messages({ 'string.length': 'List name must be between 2 and 100 characters long' }),
   industry: Joi.string()
     .valid(...industries)
     .required()
-    .message('Industry must be one of the supported values'),
+    .messages({ 'string.valid': 'Industry must be one of the supported values' }),
   description: Joi.string()
     .max(500)
     .optional()
-    .message('Description must not exceed 500 characters'),
+    .messages({ 'string.max': 'Description must not exceed 500 characters' }),
   fileUrl: Joi.string()
     .uri()
     .required()
-    .message('File URL is required and must be a valid URI'),
+    .messages({ 'string.uri': 'File URL is required and must be a valid URI' }),
 });
 
 /**
@@ -44,13 +44,13 @@ export const createByUploadSchema = Joi.object({
     .min(2)
     .max(100)
     .required()
-    .message('List name must be between 2 and 100 characters long'),
+    .messages({ 'string.length': 'List name must be between 2 and 100 characters long' }),
   industry: Joi.string()
     .valid(...industries)
     .required()
-    .message('Industry must be one of the supported values'),
+    .messages({ 'string.valid': 'Industry must be one of the supported values' }),
   description: Joi.string()
     .max(500)
     .optional()
-    .message('Description must not exceed 500 characters'),
+    .messages({ 'string.max': 'Description must not exceed 500 characters' }),
 });

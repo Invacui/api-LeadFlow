@@ -7,6 +7,14 @@ export interface GroqMessage {
   content: string;
 }
 
+/**
+ * generateReply
+ * 
+ * @description Generates a reply message from the AI model based on the user messages. If GROQ_API_KEY is not set, it will return a stub response.
+ * 
+ * @param messages 
+ * @returns 
+ */
 export const generateReply = async (messages: GroqMessage[]): Promise<string> => {
   if (!GROQ_API_KEY) {
     return '[AI Reply stub — set GROQ_API_KEY to enable]';

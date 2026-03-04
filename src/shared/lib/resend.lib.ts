@@ -10,6 +10,15 @@ export interface SendEmailOptions {
   from?: string;
 }
 
+/**
+ * sendEmail 
+ * 
+ * @description Send an email using Resend API. If RESEND_API_KEY is not set, it will log a warning and return a stub response.
+ * 
+ * @todo Add templates and store those template in db with custom design.
+ * @param options 
+ * @returns 
+ */
 export const sendEmail = async (options: SendEmailOptions): Promise<{ id: string }> => {
   if (!RESEND_API_KEY) {
     logger.warn('[resend] RESEND_API_KEY not set — email stub');

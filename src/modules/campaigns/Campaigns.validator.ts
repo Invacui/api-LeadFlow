@@ -10,5 +10,5 @@ import Joi from 'joi';
 export const campaignIdSchema = Joi.object({
   id: Joi.string()
     .required()
-    .message('Campaign id is required'),
+    .messages({ 'string.base': 'Campaign id is required' }),
 });

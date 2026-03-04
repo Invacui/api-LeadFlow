@@ -14,24 +14,24 @@ export const createTemplateSchema = Joi.object({
     .min(2)
     .max(100)
     .required()
-    .message('Product name must be between 2 and 100 characters long'),
+    .messages({ 'string.length': 'Product name must be between 2 and 100 characters long' }),
   description: Joi.string()
     .min(10)
     .max(2000)
     .required()
-    .message('Description must be between 10 and 2000 characters long'),
+    .messages({ 'string.length': 'Description must be between 10 and 2000 characters long' }),
   targetAudience: Joi.string()
     .max(500)
     .optional()
-    .message('Target audience must not exceed 500 characters'),
+    .messages({ 'string.max': 'Target audience must not exceed 500 characters' }),
   tone: Joi.string()
     .valid(...tones)
     .optional()
-    .message('Tone must be one of the supported values'),
+    .messages({ 'string.valid': 'Tone must be one of the supported values' }),
   cta: Joi.string()
     .max(200)
     .optional()
-    .message('CTA must not exceed 200 characters'),
+    .messages({ 'string.max': 'CTA must not exceed 200 characters' }),
 });
 
 /**
@@ -46,24 +46,24 @@ export const updateTemplateSchema = Joi.object({
     .min(2)
     .max(100)
     .optional()
-    .message('Product name must be between 2 and 100 characters long'),
+    .messages({ 'string.length': 'Product name must be between 2 and 100 characters long' }),
   description: Joi.string()
     .min(10)
     .max(2000)
     .optional()
-    .message('Description must be between 10 and 2000 characters long'),
+    .messages({ 'string.length': 'Description must be between 10 and 2000 characters long' }),
   targetAudience: Joi.string()
     .max(500)
     .optional()
-    .message('Target audience must not exceed 500 characters'),
+    .messages({ 'string.max': 'Target audience must not exceed 500 characters' }),
   tone: Joi.string()
     .valid(...tones)
     .optional()
-    .message('Tone must be one of the supported values'),
+    .messages({ 'string.valid': 'Tone must be one of the supported values' }),
   cta: Joi.string()
     .max(200)
     .optional()
-    .message('CTA must not exceed 200 characters'),
+    .messages({ 'string.max': 'CTA must not exceed 200 characters' }),
 });
 
 /**
@@ -77,10 +77,10 @@ export const launchCampaignSchema = Joi.object({
     .min(2)
     .max(100)
     .required()
-    .message('Campaign name must be between 2 and 100 characters long'),
+    .messages({ 'string.length': 'Campaign name must be between 2 and 100 characters long' }),
   leadListIds: Joi.array()
-    .items(Joi.string().message('Each lead list id must be a string'))
+    .items(Joi.string().messages({ 'string.base': 'Each lead list id must be a string' }))
     .min(1)
     .required()
-    .message('At least one lead list id is required'),
+    .messages({ 'array.min': 'At least one lead list id is required' }),
 });

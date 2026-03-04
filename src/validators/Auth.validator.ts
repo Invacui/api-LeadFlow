@@ -11,20 +11,20 @@ export const CreateUserApiRequestValidator = Joi.object({
   email: Joi.string()
     .email()
     .required()
-    .message('Email must be a valid email address'),
+    .messages({ 'string.email': 'Email must be a valid email address' }),
   name: Joi.string()
     .min(globalConstants.NAME_MIN_LENGTH)
     .max(globalConstants.NAME_MAX_LENGTH)
     .required()
-    .message(`Name must be between ${globalConstants.NAME_MIN_LENGTH} and ${globalConstants.NAME_MAX_LENGTH} characters long`),
+    .messages({ 'string.name': `Name must be between ${globalConstants.NAME_MIN_LENGTH} and ${globalConstants.NAME_MAX_LENGTH} characters long` }),
   password: Joi.string()
     .min(globalConstants.PASSWORD_MIN_LENGTH)
     .max(globalConstants.PASSWORD_MAX_LENGTH)
     .required()
-    .message(`Password must be between ${globalConstants.PASSWORD_MIN_LENGTH} and ${globalConstants.PASSWORD_MAX_LENGTH} characters long`),
+    .messages({ 'string.password': `Password must be between ${globalConstants.PASSWORD_MIN_LENGTH} and ${globalConstants.PASSWORD_MAX_LENGTH} characters long` }),
   corporationName: Joi.string()
     .optional()
-    .message('Corporation name must be a string'),
+    .messages({ 'string.corporationName': 'Corporation name must be a string' }),
 });
 
 /**
@@ -38,12 +38,12 @@ export const UpdateUserApiRequestValidator = Joi.object({
   email: Joi.string()
     .email()
     .optional()
-    .message('Email must be a valid email address'),
+    .messages({ 'string.email': 'Email must be a valid email address' }),
   name: Joi.string()
     .min(globalConstants.NAME_MIN_LENGTH)
     .max(globalConstants.NAME_MAX_LENGTH)
     .optional()
-    .message(`Name must be between ${globalConstants.NAME_MIN_LENGTH} and ${globalConstants.NAME_MAX_LENGTH} characters long`),
+    .messages({ 'string.name': `Name must be between ${globalConstants.NAME_MIN_LENGTH} and ${globalConstants.NAME_MAX_LENGTH} characters long` }),
 });
 
 /**
@@ -55,7 +55,7 @@ export const UpdateUserApiRequestValidator = Joi.object({
 export const UserIdParamValidator = Joi.object({
   userId: Joi.string()
     .required()
-    .message('User id is required'),
+    .messages({ 'any.required': 'User id is required' }),
 });
 
 export default { CreateUserApiRequestValidator, UpdateUserApiRequestValidator, UserIdParamValidator };

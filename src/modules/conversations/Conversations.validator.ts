@@ -13,9 +13,9 @@ export const replySchema = Joi.object({
     .min(1)
     .max(4000)
     .required()
-    .message('Content is required and must be between 1 and 4000 characters long'),
+    .messages({ 'string.length': 'Content is required and must be between 1 and 4000 characters long' }),
   channel: Joi.string()
     .valid('EMAIL', 'WHATSAPP')
     .required()
-    .message('Channel must be either EMAIL or WHATSAPP'),
+    .messages({ 'string.valid': 'Channel must be either EMAIL or WHATSAPP' }),
 });

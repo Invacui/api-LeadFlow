@@ -14,19 +14,19 @@ export const UpdateUserApiRequestValidator = Joi.object({
     .email()
     .pattern(globalConstants.EMAIL_REGEX)
     .optional()
-    .message('Email must be a valid email address'),
+    .messages({ 'string.email': 'Email must be a valid email address' }),
   name: Joi.string()
     .min(globalConstants.NAME_MIN_LENGTH)
     .max(globalConstants.NAME_MAX_LENGTH)
     .optional()
-    .message(`Name must be between ${globalConstants.NAME_MIN_LENGTH} and ${globalConstants.NAME_MAX_LENGTH} characters long`),
+    .messages({ 'string.name': `Name must be between ${globalConstants.NAME_MIN_LENGTH} and ${globalConstants.NAME_MAX_LENGTH} characters long` }),
   role: Joi.string()
     .valid(...Object.values(UserRole))
     .optional()
-    .message('Role must be one of the supported values'),
+    .messages({ 'string.role': 'Role must be one of the supported values' }),
   isVerified: Joi.boolean()
     .optional()
-    .message('isVerified must be a boolean value'),
+    .messages({ 'boolean.base': 'isVerified must be a boolean value' }),
 });
 
 export default { UpdateUserApiRequestValidator };

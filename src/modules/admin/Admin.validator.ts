@@ -12,5 +12,5 @@ export const updateTokensSchema = Joi.object({
     .integer()
     .min(0)
     .required()
-    .message('Token balance must be a non-negative integer'),
+    .messages({ 'number.min': 'Token balance must be a non-negative integer' }),
 });

@@ -1,600 +1,347 @@
-# Deployment Guide
+ # Run, Deploy, and Release — LeadFlow API
 
-This guide covers deploying the Express TypeScript Boilerplate to various platforms and environments.
+This document describes:
 
-## 🚀 Deployment Options
+- How to run the API locally (environment and dependencies).
+- How to set up staging and production deployments.
+- How to create CI workflows for automatic deploys from `dev` and `main`.
+- How to enforce linting/formatting on every merge.
+- How to manage releases and tags.
 
-### 1. Docker Deployment
+> The examples below assume GitHub as the VCS and GitHub Actions for CI/CD. Adapt the deploy steps to your chosen platform (Render, Railway, AWS, etc.).
 
-#### Dockerfile
+---
 
-Create a `Dockerfile` in the root directory:
+## 1. Running the project locally
 
-```dockerfile
-# Use Node.js LTS version
-FROM node:18-alpine
+### 1.1 Prerequisites
 
-# Set working directory
-WORKDIR /app
+- Node.js v18 or higher
+- npm (or yarn)
+- Database compatible with your `prisma/schema.prisma` (see `md/PRISMA.md`)
+- Git
 
-# Copy package files
-COPY package*.json ./
-COPY prisma ./prisma/
+### 1.2 Initial setup
 
-# Install dependencies
-RUN npm ci --only=production
+1. **Clone the repository**
 
-# Generate Prisma client
-RUN npx prisma generate
-
-# Copy source code
-COPY dist ./dist
-
-# Create logs directory
-RUN mkdir -p logs
-
-# Expose port
-EXPOSE 3001
-
-# Health check
-HEALTHCHECK --interval=30s --timeout=3s --start-period=5s --retries=3 \
-  CMD curl -f http://localhost:3001/health || exit 1
-
-# Start the application
-CMD ["node", "dist/server.js"]
-```
-
-#### Docker Compose
-
-Create a `docker-compose.yml` file:
-
-```yaml
-version: '3.8'
-
-services:
-  app:
-    build: .
-    ports:
-      - "3001:3001"
-    environment:
-      - NODE_ENV=production
-      - PORT=3001
-      - MONGO_URI=mongodb://mongo:27017
-      - DB_NAME=production_db
-      - PRIVATE_TOKEN_KEY=your-secure-secret
-    depends_on:
-      - mongo
-    volumes:
-      - ./logs:/app/logs
-
-  mongo:
-    image: mongo:6
-    ports:
-      - "27017:27017"
-    volumes:
-      - mongo_data:/data/db
-    environment:
-      - MONGO_INITDB_DATABASE=production_db
-
-volumes:
-  mongo_data:
-```
-
-#### Build and Run
-
-```bash
-# Build the application
-npm run build
-
-# Build Docker image
-docker build -t express-typescript-app .
-
-# Run with Docker Compose
-docker-compose up -d
-```
-
-### 2. Cloud Platform Deployment
-
-#### Heroku
-
-1. **Install Heroku CLI**
    ```bash
-   # Install Heroku CLI
-   npm install -g heroku
+   git clone <repository-url>
+   cd api-LeadFlow
    ```
 
-2. **Create Heroku App**
+2. **Install dependencies**
+
    ```bash
-   heroku create your-app-name
-   ```
-
-3. **Set Environment Variables**
-   ```bash
-   heroku config:set NODE_ENV=production
-   heroku config:set MONGO_URI=your-mongodb-uri
-   heroku config:set DB_NAME=your-database-name
-   heroku config:set PRIVATE_TOKEN_KEY=your-jwt-secret
-   ```
-
-4. **Deploy**
-   ```bash
-   git push heroku main
-   ```
-
-#### AWS EC2
-
-1. **Launch EC2 Instance**
-   - Choose Ubuntu 20.04 LTS
-   - Configure security groups (port 3001, 22)
-   - Launch instance
-
-2. **Connect and Setup**
-   ```bash
-   # Connect to instance
-   ssh -i your-key.pem ubuntu@your-ec2-ip
-
-   # Update system
-   sudo apt update && sudo apt upgrade -y
-
-   # Install Node.js
-   curl -fsSL https://deb.nodesource.com/setup_18.x | sudo -E bash -
-   sudo apt-get install -y nodejs
-
-   # Install PM2
-   sudo npm install -g pm2
-
-   # Install MongoDB
-   wget -qO - https://www.mongodb.org/static/pgp/server-6.0.asc | sudo apt-key add -
-   echo "deb [ arch=amd64,arm64 ] https://repo.mongodb.org/apt/ubuntu focal/mongodb-org/6.0 multiverse" | sudo tee /etc/apt/sources.list.d/mongodb-org-6.0.list
-   sudo apt-get update
-   sudo apt-get install -y mongodb-org
-   sudo systemctl start mongod
-   sudo systemctl enable mongod
-   ```
-
-3. **Deploy Application**
-   ```bash
-   # Clone repository
-   git clone <your-repo-url>
-   cd express-typescript-boilerplate
-
-   # Install dependencies
    npm install
-
-   # Build application
-   npm run build
-
-   # Set up environment
-   cp .env.example .env
-   # Edit .env with production values
-
-   # Start with PM2
-   pm2 start dist/server.js --name "express-app"
-   pm2 save
-   pm2 startup
    ```
 
-#### DigitalOcean App Platform
+3. **Set up environment variables**
 
-1. **Create App**
-   - Connect GitHub repository
-   - Select Node.js
-   - Configure build settings
+   - Review `md/Env/ENVIRONMENT_SETUP_COMPLETE.md` for the full list of variables.
+   - Copy the example env file and configure it:
 
-2. **Environment Variables**
-   ```env
-   NODE_ENV=production
-   PORT=3001
-   MONGO_URI=your-mongodb-uri
-   DB_NAME=your-database-name
-   PRIVATE_TOKEN_KEY=your-jwt-secret
-   ```
-
-3. **Build Settings**
-   ```yaml
-   build_command: npm run build
-   run_command: npm start
-   ```
-
-#### Vercel
-
-1. **Install Vercel CLI**
    ```bash
-   npm install -g vercel
+   cp .env.example Private.env
+   # Open Private.env and set database URL, JWT secrets, internal keys, etc.
    ```
 
-2. **Configure vercel.json**
-   ```json
-   {
-     "version": 2,
-     "builds": [
-       {
-         "src": "dist/server.js",
-         "use": "@vercel/node"
-       }
-     ],
-     "routes": [
-       {
-         "src": "/(.*)",
-         "dest": "dist/server.js"
-       }
-     ]
-   }
-   ```
+4. **Prepare the database**
 
-3. **Deploy**
    ```bash
-   npm run build
-   vercel --prod
+   npm run prisma:generate
+   npm run prisma:migrate
+   # Optional:
+   # npm run prisma:seed
    ```
 
-### 3. Kubernetes Deployment
+5. **Run the dev server**
 
-#### Dockerfile (Multi-stage)
+   ```bash
+   npm run dev
+   ```
 
-```dockerfile
-# Build stage
-FROM node:18-alpine AS builder
+   This starts the API in watch mode using the TypeScript source (`src/server.ts`) and applies any pending dev migrations.
 
-WORKDIR /app
-COPY package*.json ./
-COPY prisma ./prisma/
-RUN npm ci
-COPY . .
-RUN npm run build
+---
 
-# Production stage
-FROM node:18-alpine AS production
+## 2. Staging and production deployments
 
-WORKDIR /app
-COPY package*.json ./
-COPY prisma ./prisma/
-RUN npm ci --only=production && npx prisma generate
-COPY --from=builder /app/dist ./dist
-RUN mkdir -p logs
+You should have at least two long-lived branches and environments:
 
-EXPOSE 3001
-CMD ["node", "dist/server.js"]
-```
+- `dev` → **staging** (pre-production/testing)
+- `main` → **production**
 
-#### Kubernetes Manifests
+Each environment should have its own:
 
-**deployment.yaml**
+- Database (separate URLs in env vars).
+- Secrets (JWT keys, internal service keys, third-party API keys).
+- Domain/URL.
+
+### 2.1 Platform setup (high-level)
+
+For each environment (staging and production):
+
+1. **Create an application** on your platform (e.g. Render, Railway, AWS, etc.).
+2. **Configure build and run commands**:
+
+   - Build: `npm run build`
+   - Start: `npm start`
+
+3. **Configure environment variables**:
+
+   - `NODE_ENV=production`
+   - `PORT=3001` (or your port)
+   - `DATABASE_URL` (or equivalent Prisma DB URL)
+   - JWT/secret keys and any other required vars.
+
+4. **Configure networking**:
+
+   - Expose your chosen port.
+   - Set correct base URL, CORS origins, and health check path (`/health`).
+
+5. **Set up deployment credentials**:
+
+   - Generate API keys or tokens for your platform.
+   - Store them as GitHub Action secrets (`STAGING_DEPLOY_TOKEN`, `PROD_DEPLOY_TOKEN`, etc.).
+
+See `md/Workflow/DEPLOYMENT.md` for detailed Docker, Kubernetes, and cloud examples.
+
+---
+
+## 3. CI/CD workflows for dev → staging and main → production
+
+The goal is:
+
+- Any code merged into `dev` automatically deploys to **staging**.
+- Any code merged into `main` automatically deploys to **production**.
+
+Create two workflows under `.github/workflows/`:
+
+### 3.1 Staging deploy workflow (`deploy-staging.yml`)
+
 ```yaml
-apiVersion: apps/v1
-kind: Deployment
-metadata:
-  name: express-app
-spec:
-  replicas: 3
-  selector:
-    matchLabels:
-      app: express-app
-  template:
-    metadata:
-      labels:
-        app: express-app
-    spec:
-      containers:
-      - name: express-app
-        image: your-registry/express-app:latest
-        ports:
-        - containerPort: 3001
+name: Deploy to Staging
+
+on:
+  push:
+    branches:
+      - dev
+
+jobs:
+  test-and-build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+      - name: Install dependencies
+        run: npm ci
+      - name: Lint
+        run: npm run lint
+      - name: Test
+        run: npm test
+      - name: Build
+        run: npm run build
+
+  deploy:
+    needs: test-and-build
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Deploy to staging
         env:
-        - name: NODE_ENV
-          value: "production"
-        - name: PORT
-          value: "3001"
-        - name: MONGO_URI
-          valueFrom:
-            secretKeyRef:
-              name: app-secrets
-              key: mongo-uri
-        - name: DB_NAME
-          value: "production_db"
-        - name: PRIVATE_TOKEN_KEY
-          valueFrom:
-            secretKeyRef:
-              name: app-secrets
-              key: jwt-secret
-        resources:
-          requests:
-            memory: "256Mi"
-            cpu: "250m"
-          limits:
-            memory: "512Mi"
-            cpu: "500m"
-        livenessProbe:
-          httpGet:
-            path: /health
-            port: 3001
-          initialDelaySeconds: 30
-          periodSeconds: 10
-        readinessProbe:
-          httpGet:
-            path: /health
-            port: 3001
-          initialDelaySeconds: 5
-          periodSeconds: 5
+          STAGING_DEPLOY_TOKEN: ${{ secrets.STAGING_DEPLOY_TOKEN }}
+        run: |
+          # TODO: replace with your platform-specific deploy command
+          # Examples:
+          # - curl to your deploy hook URL
+          # - CLI call to Render/Railway/AWS
+          echo "Deploying staging with token=${STAGING_DEPLOY_TOKEN:0:4}***"
 ```
 
-**service.yaml**
-```yaml
-apiVersion: v1
-kind: Service
-metadata:
-  name: express-app-service
-spec:
-  selector:
-    app: express-app
-  ports:
-  - port: 80
-    targetPort: 3001
-  type: LoadBalancer
-```
-
-**secrets.yaml**
-```yaml
-apiVersion: v1
-kind: Secret
-metadata:
-  name: app-secrets
-type: Opaque
-data:
-  mongo-uri: <base64-encoded-mongo-uri>
-  jwt-secret: <base64-encoded-jwt-secret>
-```
-
-## 🔧 Production Configuration
-
-### Environment Variables
-
-Create a production `.env` file:
-
-```env
-# Server Configuration
-NODE_ENV=production
-PORT=3001
-BASE_URL=https://your-domain.com
-
-# Database Configuration
-MONGO_URI=mongodb://username:password@host:port/database
-DB_NAME=production_db
-
-# JWT Configuration
-PRIVATE_TOKEN_KEY=your-super-secure-jwt-secret-key
-
-# CORS Configuration
-ALLOWED_ORIGINS=https://your-frontend-domain.com,https://your-admin-domain.com
-
-# Logging Configuration
-LOG_LEVEL=info
-LOG_FILE_MAX_SIZE=20m
-LOG_FILE_MAX_FILES=14d
-```
-
-### Security Considerations
-
-1. **Environment Variables**
-   - Use strong, unique secrets
-   - Never commit secrets to version control
-   - Use secret management services
-
-2. **HTTPS**
-   - Always use HTTPS in production
-   - Configure SSL certificates
-   - Use Let's Encrypt for free certificates
-
-3. **CORS**
-   - Configure specific allowed origins
-   - Avoid using wildcard (*) in production
-
-4. **Rate Limiting**
-   - Implement rate limiting
-   - Use Redis for distributed rate limiting
-
-5. **Input Validation**
-   - Validate all inputs
-   - Sanitize user data
-   - Use parameterized queries
-
-### Performance Optimization
-
-1. **Database**
-   - Use connection pooling
-   - Implement proper indexing
-   - Consider read replicas
-
-2. **Caching**
-   - Implement Redis caching
-   - Cache frequently accessed data
-   - Use CDN for static assets
-
-3. **Monitoring**
-   - Set up application monitoring
-   - Monitor database performance
-   - Track error rates and response times
-
-### Health Checks
-
-The application includes a health check endpoint:
-
-```bash
-curl https://your-domain.com/health
-```
-
-Response:
-```json
-{
-  "success": true,
-  "message": "Server is running",
-  "timestamp": "2024-01-01T00:00:00.000Z",
-  "uptime": 123.456
-}
-```
-
-### Logging
-
-Production logging configuration:
-
-```typescript
-// In production, logs are written to files
-// Log files are rotated daily
-// Error logs are separated from general logs
-// Logs are stored in the logs/ directory
-```
-
-## 📊 Monitoring and Maintenance
-
-### Application Monitoring
-
-1. **Health Checks**
-   - Monitor `/health` endpoint
-   - Set up alerts for failures
-   - Track response times
-
-2. **Error Tracking**
-   - Monitor error logs
-   - Set up error alerts
-   - Track error rates
-
-3. **Performance Monitoring**
-   - Monitor response times
-   - Track database query performance
-   - Monitor memory usage
-
-### Database Maintenance
-
-1. **Backups**
-   - Set up regular database backups
-   - Test backup restoration
-   - Store backups securely
-
-2. **Indexing**
-   - Monitor query performance
-   - Add indexes as needed
-   - Remove unused indexes
-
-3. **Scaling**
-   - Monitor database load
-   - Consider read replicas
-   - Plan for horizontal scaling
-
-### Security Updates
-
-1. **Dependencies**
-   - Regularly update dependencies
-   - Monitor security advisories
-   - Use automated security scanning
-
-2. **System Updates**
-   - Keep the operating system updated
-   - Apply security patches promptly
-   - Monitor for vulnerabilities
-
-## 🔄 CI/CD Pipeline
-
-### GitHub Actions
-
-Create `.github/workflows/deploy.yml`:
+### 3.2 Production deploy workflow (`deploy-production.yml`)
 
 ```yaml
 name: Deploy to Production
 
 on:
   push:
-    branches: [main]
+    branches:
+      - main
 
 jobs:
-  test:
+  test-and-build:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
-      - uses: actions/setup-node@v3
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
         with:
           node-version: '18'
-      - run: npm ci
-      - run: npm run lint
-      - run: npm test
-      - run: npm run build
+      - name: Install dependencies
+        run: npm ci
+      - name: Lint
+        run: npm run lint
+      - name: Test
+        run: npm test
+      - name: Build
+        run: npm run build
 
   deploy:
-    needs: test
+    needs: test-and-build
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - name: Deploy to production
+        env:
+          PROD_DEPLOY_TOKEN: ${{ secrets.PROD_DEPLOY_TOKEN }}
         run: |
-          # Your deployment commands here
+          # TODO: replace with your platform-specific deploy command
+          echo "Deploying production with token=${PROD_DEPLOY_TOKEN:0:4}***"
 ```
 
-### Deployment Checklist
+With these in place:
 
-- [ ] All tests pass
-- [ ] Code is linted and formatted
-- [ ] Environment variables are configured
-- [ ] Database migrations are applied
-- [ ] SSL certificates are configured
-- [ ] Monitoring is set up
-- [ ] Backup strategy is in place
-- [ ] Security measures are implemented
-- [ ] Performance is optimized
-- [ ] Documentation is updated
-
-## 🆘 Troubleshooting
-
-### Common Issues
-
-1. **Application Won't Start**
-   - Check environment variables
-   - Verify database connection
-   - Check port availability
-
-2. **Database Connection Issues**
-   - Verify MongoDB is running
-   - Check connection string
-   - Verify network connectivity
-
-3. **Memory Issues**
-   - Monitor memory usage
-   - Check for memory leaks
-   - Optimize database queries
-
-4. **Performance Issues**
-   - Monitor response times
-   - Check database performance
-   - Review application logs
-
-### Debug Commands
-
-```bash
-# Check application status
-pm2 status
-
-# View application logs
-pm2 logs express-app
-
-# Restart application
-pm2 restart express-app
-
-# Check database connection
-mongo --eval "db.adminCommand('ismaster')"
-
-# Check disk space
-df -h
-
-# Check memory usage
-free -h
-```
-
-## 📞 Support
-
-For deployment issues:
-- Check the logs
-- Review the documentation
-- Contact the development team
-- Create an issue on GitHub
+- Merging a PR into `dev` will run tests and deploy to staging.
+- Merging a PR into `main` will run tests and deploy to production.
 
 ---
 
-**Happy Deploying! 🚀**
+## 4. Workflow for linting and formatting on every merge
+
+To enforce linting and formatting conventions on each merge, create a workflow that runs on pull requests and fails if conventions are violated.
+
+### 4.1 CI checks workflow (`ci-checks.yml`)
+
+```yaml
+name: CI — Lint, Test, Build
+
+on:
+  pull_request:
+    branches:
+      - dev
+      - main
+
+jobs:
+  lint-test-build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+      - name: Install dependencies
+        run: npm ci
+      - name: Lint
+        run: npm run lint
+      - name: Tests
+        run: npm test
+      - name: Build
+        run: npm run build
+```
+
+This enforces:
+
+- No PR can be merged into `dev` or `main` unless lint, tests, and build all pass.
+- For automatic code formatting/beautification, run `npm run lint:fix` (and/or Prettier) locally before committing, and consider a local pre-commit hook.
+
+### 4.2 Optional: pre-commit hook for local formatting
+
+Create `.husky/pre-commit` (or an equivalent Git hook) to run formatting locally before commit, for example:
+
+```bash
+npm run lint:fix
+```
+
+Configure Husky or your preferred tool if you want this enforced automatically.
+
+---
+
+## 5. Releases and tagging strategy
+
+The goal is:
+
+- **Every release has a tag.**
+- **Merges from `dev` to `main` for production releases also carry a version tag.**
+
+### 5.1 Manual tagging workflow
+
+1. **Decide a version number** following semantic versioning:
+
+   - `vX.Y.Z` (e.g. `v1.4.0`).
+
+2. **Merge `dev` into `main`** via a pull request:
+
+   ```bash
+   git checkout main
+   git pull origin main
+   git merge --no-ff dev
+   git push origin main
+   ```
+
+3. **Create and push a tag** on `main`:
+
+   ```bash
+   git tag v1.4.0
+   git push origin v1.4.0
+   ```
+
+4. **Create a GitHub Release**:
+
+   - Go to "Releases" in GitHub.
+   - Click "Draft a new release".
+   - Select tag `v1.4.0`.
+   - Fill in release notes (features, fixes, breaking changes).
+   - Publish the release.
+
+The production deploy workflow (from section 3.2) will run when `main` is updated; you can also choose to trigger it only on tags if preferred.
+
+### 5.2 Optional: automatic tagging when merging `dev` into `main`
+
+You can automate tagging via a workflow that:
+
+- Triggers on push to `main`.
+- Computes the next version (e.g. using commit messages).
+- Creates and pushes a tag.
+
+Example (simplified, using a manual version input or a script you provide):
+
+```yaml
+name: Auto Tag on Main Merge
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  tag:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Create tag (example)
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          # Replace this with your own versioning logic
+          VERSION="v$(date +'%Y.%m.%d.%H%M')"
+          git tag "$VERSION"
+          git push origin "$VERSION"
+```
+
+With this in place:
+
+- Every time `main` changes (typically via merging `dev`), a new tag is created.
+- Production releases are clearly identified by Git tags and GitHub Releases.
+
+---
+
+## 6. Summary
+
+- **Local run:** install deps, configure `Private.env`, run Prisma commands, then `npm run dev`.
+- **Staging:** `dev` branch pushes trigger staging deploy.
+- **Production:** `main` branch pushes trigger production deploy.
+- **Quality gates:** CI workflows run lint, tests, and build on every PR and before deploy.
+- **Releases:** every production release is tagged, and merges from `dev` to `main` include or generate version tags.
+

@@ -37,8 +37,15 @@ router.get('/health', (_req: Request, res: Response) => {
  * @todo Read and add a ref for this internal auth
  */
 const internalAuth = (req: Request, res: Response, next: NextFunction): void => {
+  if(!req.headers['x-service-key']) {
+    error(res, 401, 'Missing service key');
+    return;
+  }
   const key = req.headers['x-service-key'];
-  if (key !== process.env.INTERNAL_SERVICE_KEY) {
+  // Decode the key in base64 to prevent accidental logging of the raw key
+  // const encodedKey = Buffer.from(typeof key === 'string' ? key : key[0]).toString('base64');
+  const decodedKey = Buffer.from(typeof key === 'string' ? key : key[0], 'base64').toString('utf-8'); 
+  if (decodedKey !== process.env.INTERNAL_SERVICE_KEY) {
     error(res, 401, 'Invalid service key');
     return;
   }
