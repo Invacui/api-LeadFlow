@@ -56,7 +56,7 @@ describe('Auth API', () => {
     });
   });
 
-  describe('404 handling', ( ) => {
+  describe('404 handling', () => {
     it('should return 404 for unknown routes', async () => {
       const response = await request(app).get('/api/v1/unknown-route').expect(404);
       expect(response.body.success).toBe(false);
