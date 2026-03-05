@@ -41,13 +41,13 @@ class EnvironmentConfig {
 
   private buildConfig(): EnvironmentVariables {
     return {
-      NODE_ENV: process.env.NODE_ENV || 'development',
-      PORT: parseInt(process.env.PORT || '3001', 10),
-      BASE_URL: process.env.BASE_URL || 'http://localhost',
-      DATABASE_URL: process.env.DATABASE_URL,
-      MONGO_URI: process.env.MONGO_URI,
-      DB_NAME: process.env.DB_NAME,
-      PRIVATE_TOKEN_KEY: process.env.PRIVATE_TOKEN_KEY,
+      NODE_ENV: process.env.NODE_ENV || 'development', // Default to 'development' if NODE_ENV is not set
+      PORT: parseInt(process.env.PORT || '3001', 10), // Default to 3001 if PORT is not set
+      BASE_URL: process.env.BASE_URL || 'http://localhost', // Default to 'http://localhost' if BASE_URL is not set
+      DATABASE_URL: process.env.DATABASE_URL, // URL for relational databases (e.g., PostgreSQL, MySQL)
+      MONGO_URI: process.env.MONGO_URI, // URL for MongoDB
+      DB_NAME: process.env.DB_NAME, // Database name for MongoDB
+      PRIVATE_TOKEN_KEY: process.env.PRIVATE_TOKEN_KEY, // Secret key for JWT signing
     };
   }
 

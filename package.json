@@ -7,12 +7,12 @@
     "dev:start": "ts-node-dev --respawn --transpile-only -r tsconfig-paths/register src/server.ts",
     "dev": "npm run dev:db && npm run dev:start",
     "staging:db": "prisma migrate deploy",
-    "staging:start": "cross-env NODE_ENV=staging node dist/server.js",
+    "staging:start": "cross-env NODE_ENV=staging node -r tsconfig-paths/register dist/server.js",
     "staging": "npm run build && npm run staging:db && npm run staging:start",
     "prod:db": "prisma migrate deploy",
-    "prod:start": "cross-env NODE_ENV=production node dist/server.js",
+    "prod:start": "cross-env NODE_ENV=production node -r tsconfig-paths/register dist/server.js",
     "prod": "npm run build && npm run prod:db && npm run prod:start",
-    "build": "tsc",
+    "build": "tsc && tsc-alias",
     "test": "cross-env NODE_ENV=test jest",
     "test:watch": "cross-env NODE_ENV=test jest --watch",
     "test:coverage": "cross-env NODE_ENV=test jest --coverage",
@@ -59,6 +59,7 @@
     "ts-jest": "^29.1.1",
     "ts-node": "^10.9.1",
     "ts-node-dev": "^2.0.0",
+    "tsc-alias": "^1.8.16",
     "tsconfig-paths": "^4.2.0",
     "typescript": "^5.3.2"
   }
