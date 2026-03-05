@@ -21,7 +21,7 @@ export class AdminController {
    */
   async getUsers(req: Request, res: Response): Promise<void> {
     try {
-      global.logger.info(`Initiating getUsers [CONTROLLER]`, {
+      global.logger.info('Initiating getUsers [CONTROLLER]', {
         methodName: this.getUsers.name,
         fileName: __filename,
       });
@@ -36,7 +36,7 @@ export class AdminController {
    */
   async getUserById(req: Request, res: Response): Promise<void> {
     try {
-      global.logger.info(`Initiating getUserById [CONTROLLER]`, {
+      global.logger.info('Initiating getUserById [CONTROLLER]', {
         methodName: this.getUserById.name,
         fileName: __filename,
         id: req.params.id,
@@ -51,7 +51,7 @@ export class AdminController {
    */
   async updateTokens(req: Request, res: Response): Promise<void> {
     try {
-      global.logger.info(`Initiating updateTokens [CONTROLLER]`, {
+      global.logger.info('Initiating updateTokens [CONTROLLER]', {
         methodName: this.updateTokens.name,
         fileName: __filename,
         id: req.params.id,
@@ -66,7 +66,7 @@ export class AdminController {
    */
   async suspendUser(req: Request, res: Response): Promise<void> {
     try {
-      global.logger.info(`Initiating suspendUser [CONTROLLER]`, {
+      global.logger.info('Initiating suspendUser [CONTROLLER]', {
         methodName: this.suspendUser.name,
         fileName: __filename,
         id: req.params.id,
@@ -86,7 +86,7 @@ export class AdminController {
    */
   async deleteUser(req: Request, res: Response): Promise<void> {
     try {
-      global.logger.info(`Initiating deleteUser [CONTROLLER]`, {
+      global.logger.info('Initiating deleteUser [CONTROLLER]', {
         methodName: this.deleteUser.name,
         fileName: __filename,
         id: req.params.id,
@@ -101,7 +101,7 @@ export class AdminController {
    */
   async getLeadRequests(req: Request, res: Response): Promise<void> {
     try {
-      global.logger.info(`Initiating getLeadRequests [CONTROLLER]`, {
+      global.logger.info('Initiating getLeadRequests [CONTROLLER]', {
         methodName: this.getLeadRequests.name,
         fileName: __filename,
       });
@@ -116,7 +116,7 @@ export class AdminController {
    */
   async getCampaigns(req: Request, res: Response): Promise<void> {
     try {
-      global.logger.info(`Initiating getCampaigns [CONTROLLER]`, {
+      global.logger.info('Initiating getCampaigns [CONTROLLER]', {
         methodName: this.getCampaigns.name,
         fileName: __filename,
       });
@@ -131,7 +131,7 @@ export class AdminController {
    */
   async getStats(req: Request, res: Response): Promise<void> {
     try {
-      global.logger.info(`Initiating getStats [CONTROLLER]`, {
+      global.logger.info('Initiating getStats [CONTROLLER]', {
         methodName: this.getStats.name,
         fileName: __filename,
       });

@@ -1,4 +1,4 @@
-import { logger } from "@/logger/logger";
+import { logger } from '@/logger/logger';
 // BullMQ lead parse worker stub
 // When bullmq is installed:
 // import { Worker } from 'bullmq';

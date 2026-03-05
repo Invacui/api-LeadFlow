@@ -39,7 +39,7 @@ export class AuthService {
    */
   async signup(data: SignupRequest): Promise<{ tokens: AuthTokens; user: MeResponse }> {
 
-    global.logger.info(`Initiating signup [SERVICE]`,
+    global.logger.info('Initiating signup [SERVICE]',
       {
         methodName: this.signup.name,
         fileName: __filename,
@@ -96,7 +96,7 @@ export class AuthService {
    */
   async login(data: LoginRequest): Promise<{ tokens: AuthTokens; user: MeResponse }> {
 
-    global.logger.info(`Initiating login [SERVICE]`,
+    global.logger.info('Initiating login [SERVICE]',
       {
         methodName: this.login.name,
         fileName: __filename,
@@ -135,7 +135,7 @@ export class AuthService {
    * @returns {Promise<{ accessToken: string }>} - A promise that resolves to an object containing the new access token if the refresh operation is successful.
    */
   async refresh(refreshToken: string): Promise<{ accessToken: string }> {
-    global.logger.info(`Initiating token refresh [SERVICE]`,
+    global.logger.info('Initiating token refresh [SERVICE]',
       {
         methodName: this.refresh.name,
         fileName: __filename,
@@ -169,7 +169,7 @@ export class AuthService {
    * @returns {Promise<void>} - A promise that resolves when the logout operation is complete.
    */
   async logout(userId: string): Promise<void> {
-    global.logger.info(`Initiating logout [SERVICE]`,
+    global.logger.info('Initiating logout [SERVICE]',
       {
         methodName: this.logout.name,
         fileName: __filename,
@@ -189,7 +189,7 @@ export class AuthService {
    * @returns {Promise<MeResponse>} - A promise that resolves to the user's information.
    */
   async getMe(userId: string): Promise<MeResponse> {
-    global.logger.info(`Initiating getMe [SERVICE]`,
+    global.logger.info('Initiating getMe [SERVICE]',
       {
         methodName: this.getMe.name,
         fileName: __filename,
@@ -211,7 +211,7 @@ export class AuthService {
    * @returns {Promise<void>} - A promise that resolves when the email verification process is complete.
    */
   async verifyEmail(token: string): Promise<void> {
-    global.logger.info(`Initiating email verification [SERVICE]`,
+    global.logger.info('Initiating email verification [SERVICE]',
       {
         methodName: this.verifyEmail.name,
         fileName: __filename,
@@ -247,7 +247,7 @@ export class AuthService {
    * @returns {Promise<void>} - A promise that resolves when the resend verification process is complete.
    */
   async resendVerification(data: ResendVerificationRequest): Promise<void> {
-    global.logger.info(`Initiating resendVerification [SERVICE]`,
+    global.logger.info('Initiating resendVerification [SERVICE]',
       {
         methodName: this.resendVerification.name,
         fileName: __filename,
@@ -279,7 +279,7 @@ export class AuthService {
    * @returns {Promise<void>} - A promise that resolves when the forgot password process is complete.
    */
   async forgotPassword(data: ForgotPasswordRequest): Promise<void> {
-    global.logger.info(`Initiating forgotPassword [SERVICE]`,
+    global.logger.info('Initiating forgotPassword [SERVICE]',
       {
         methodName: this.forgotPassword.name,
         fileName: __filename,
@@ -318,7 +318,7 @@ export class AuthService {
    * @returns {Promise<void>} - A promise that resolves when the password reset process is complete.
    */
   async resetPassword(data: ResetPasswordRequest): Promise<void> {
-    global.logger.info(`Initiating resetPassword [SERVICE]`,
+    global.logger.info('Initiating resetPassword [SERVICE]',
       {
         methodName: this.resetPassword.name,
         fileName: __filename,
@@ -348,7 +348,7 @@ export class AuthService {
    * @returns {AuthTokens} - An object containing the generated access token and refresh token for the user.
    */
   private generateTokens(user: { id: string; role: string; tokenBalance: number }): AuthTokens {
-    global.logger.info(`Generating tokens [SERVICE]`,
+    global.logger.info('Generating tokens [SERVICE]',
       {
         methodName: this.generateTokens.name,
         fileName: __filename,
@@ -370,7 +370,7 @@ export class AuthService {
    * @returns The converted MeResponse object.
    */
   private toMeResponse(user: any): MeResponse {
-    global.logger.info(`Converting user to MeResponse [SERVICE]`,
+    global.logger.info('Converting user to MeResponse [SERVICE]',
       {
         methodName: this.toMeResponse.name,
         fileName: __filename,

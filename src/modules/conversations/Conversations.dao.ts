@@ -22,7 +22,7 @@ export class ConversationsDao {
    * conversations and the total count so the controller can build metadata.
    */
   async findAllByUser(userId: string, query: Record<string, any>): Promise<[Conversation[], number]> {
-    global.logger.info(`Finding all conversations by user [DAO]`, {
+    global.logger.info('Finding all conversations by user [DAO]', {
       methodName: this.findAllByUser.name,
       fileName: __filename,
       userId,
@@ -44,7 +44,7 @@ export class ConversationsDao {
    * can render the thread chronologically.
    */
   async findById(id: string, userId: string): Promise<Conversation | null> {
-    global.logger.info(`Finding conversation by id [DAO]`, {
+    global.logger.info('Finding conversation by id [DAO]', {
       methodName: this.findById.name,
       fileName: __filename,
       id,
@@ -65,7 +65,7 @@ export class ConversationsDao {
    * @param isAiGenerated  Flag indicating whether the message came from AI.
    */
   async addMessage(conversationId: string, content: string, direction: any, isAiGenerated = false) {
-    global.logger.info(`Adding message to conversation [DAO]`, {
+    global.logger.info('Adding message to conversation [DAO]', {
       methodName: this.addMessage.name,
       fileName: __filename,
       conversationId,

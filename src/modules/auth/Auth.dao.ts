@@ -19,7 +19,7 @@ export class AuthDao {
    * @returns {Promise<User | null>} - A promise that resolves to the found User object or null if not found.
    */
   async findByEmail(email: string): Promise<User | null> {
-    global.logger.info(`Finding user by email [DAO]`,
+    global.logger.info('Finding user by email [DAO]',
       {
         methodName: this.findByEmail.name,
         fileName: __filename,
@@ -38,7 +38,7 @@ export class AuthDao {
    * @returns {Promise<User | null>} - A promise that resolves to the found User object or null if not found.
    */
   async findById(id: string): Promise<User | null> {
-    global.logger.info(`Finding user by ID [DAO]`,
+    global.logger.info('Finding user by ID [DAO]',
       {
         methodName: this.findById.name,
         fileName: __filename,
@@ -57,7 +57,7 @@ export class AuthDao {
    * @returns {Promise<User | null>} - A promise that resolves to the found User object or null if not found.
    */
   async findByEmailVerifyToken(token: string): Promise<User | null> {
-    global.logger.info(`Finding user by email verification token [DAO]`,
+    global.logger.info('Finding user by email verification token [DAO]',
       {
         methodName: this.findByEmailVerifyToken.name,
         fileName: __filename,
@@ -76,7 +76,7 @@ export class AuthDao {
    * @returns {Promise<User | null>} - A promise that resolves to the found User object or null if not found.
    */
   async findByPasswordResetToken(token: string): Promise<User | null> {
-    global.logger.info(`Finding user by password reset token [DAO]`,
+    global.logger.info('Finding user by password reset token [DAO]',
       {
         methodName: this.findByPasswordResetToken.name,
         fileName: __filename,
@@ -95,7 +95,7 @@ export class AuthDao {
    * @returns {Promise<User | null>} - A promise that resolves to the found User object or null if not found.
    */
   async findByRefreshToken(token: string): Promise<User | null> {
-    global.logger.info(`Finding user by refresh token [DAO]`,
+    global.logger.info('Finding user by refresh token [DAO]',
       {
         methodName: this.findByRefreshToken.name,
         fileName: __filename,
@@ -122,7 +122,7 @@ export class AuthDao {
     emailVerifyExpires: Date;
     tokenBalance: number;
   }): Promise<User> {
-    global.logger.info(`Creating user [DAO]`,
+    global.logger.info('Creating user [DAO]',
       {
         methodName: this.create.name,
         fileName: __filename,
@@ -142,7 +142,7 @@ export class AuthDao {
    * @returns {Promise<User>} - A promise that resolves to the updated User object.
    */
   async update(id: string, data: Partial<User>): Promise<User> {
-    global.logger.info(`Updating user [DAO]`,
+    global.logger.info('Updating user [DAO]',
       {
         methodName: this.update.name,
         fileName: __filename,
@@ -162,7 +162,7 @@ export class AuthDao {
    * @returns {Promise<{ id: string }>} - A promise that resolves to the created Corporation object.
    */
   async createCorporation(name: string): Promise<{ id: string }> {
-    global.logger.info(`Creating corporation [DAO]`,
+    global.logger.info('Creating corporation [DAO]',
       {
         methodName: this.createCorporation.name,
         fileName: __filename,

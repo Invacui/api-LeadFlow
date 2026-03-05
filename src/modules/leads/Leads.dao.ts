@@ -26,7 +26,7 @@ export class LeadsDao {
     fileKey?: string;
     userId: string;
   }): Promise<LeadRequest> {
-    global.logger.info(`Creating lead request [DAO]`, {
+    global.logger.info('Creating lead request [DAO]', {
       methodName: this.create.name,
       fileName: __filename,
       userId: data.userId,
@@ -39,7 +39,7 @@ export class LeadsDao {
    * List lead requests for a user with pagination.
    */
   async findAllByUser(userId: string, query: Record<string, any>): Promise<[LeadRequest[], number]> {
-    global.logger.info(`Finding all lead requests by user [DAO]`, {
+    global.logger.info('Finding all lead requests by user [DAO]', {
       methodName: this.findAllByUser.name,
       fileName: __filename,
       userId,
@@ -58,7 +58,7 @@ export class LeadsDao {
    * Find a lead request by ID for a specific user, respecting soft-delete flag.
    */
   async findById(id: string, userId: string): Promise<LeadRequest | null> {
-    global.logger.info(`Finding lead request by id [DAO]`, {
+    global.logger.info('Finding lead request by id [DAO]', {
       methodName: this.findById.name,
       fileName: __filename,
       id,
@@ -72,7 +72,7 @@ export class LeadsDao {
    * from normal queries.
    */
   async softDelete(id: string, userId: string): Promise<LeadRequest | null> {
-    global.logger.info(`Soft-deleting lead request [DAO]`, {
+    global.logger.info('Soft-deleting lead request [DAO]', {
       methodName: this.softDelete.name,
       fileName: __filename,
       id,
@@ -85,7 +85,7 @@ export class LeadsDao {
    * Partially update a lead request by ID.
    */
   async update(id: string, data: Partial<LeadRequest>): Promise<LeadRequest> {
-    global.logger.info(`Updating lead request [DAO]`, {
+    global.logger.info('Updating lead request [DAO]', {
       methodName: this.update.name,
       fileName: __filename,
       id,
@@ -97,7 +97,7 @@ export class LeadsDao {
    * Get leads belonging to a lead request with pagination.
    */
   async getLeads(leadRequestId: string, query: Record<string, any>): Promise<[Lead[], number]> {
-    global.logger.info(`Getting leads for lead request [DAO]`, {
+    global.logger.info('Getting leads for lead request [DAO]', {
       methodName: this.getLeads.name,
       fileName: __filename,
       leadRequestId,

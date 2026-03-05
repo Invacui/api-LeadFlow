@@ -1,4 +1,4 @@
-import { logger } from "@/logger/logger";
+import { logger } from '@/logger/logger';
 // Resend stub — enable by installing resend
 const RESEND_API_KEY = process.env.RESEND_API_KEY;
 const EMAIL_FROM = process.env.EMAIL_FROM || 'noreply@leadflow.io';

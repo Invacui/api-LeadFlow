@@ -21,7 +21,7 @@ export class LeadsController {
    */
   async upload(req: Request, res: Response): Promise<void> {
     try {
-      global.logger.info(`Initiating upload lead [CONTROLLER]`, {
+      global.logger.info('Initiating upload lead [CONTROLLER]', {
         methodName: this.upload.name,
         fileName: __filename,
         userId: req.user!.id,
@@ -39,7 +39,7 @@ export class LeadsController {
    */
   async link(req: Request, res: Response): Promise<void> {
     try {
-      global.logger.info(`Initiating link lead [CONTROLLER]`, {
+      global.logger.info('Initiating link lead [CONTROLLER]', {
         methodName: this.link.name,
         fileName: __filename,
         userId: req.user!.id,
@@ -54,7 +54,7 @@ export class LeadsController {
    */
   async list(req: Request, res: Response): Promise<void> {
     try {
-      global.logger.info(`Initiating list lead requests [CONTROLLER]`, {
+      global.logger.info('Initiating list lead requests [CONTROLLER]', {
         methodName: this.list.name,
         fileName: __filename,
         userId: req.user!.id,
@@ -70,7 +70,7 @@ export class LeadsController {
    */
   async getById(req: Request, res: Response): Promise<void> {
     try {
-      global.logger.info(`Initiating getById lead request [CONTROLLER]`, {
+      global.logger.info('Initiating getById lead request [CONTROLLER]', {
         methodName: this.getById.name,
         fileName: __filename,
         id: req.params.id,
@@ -86,7 +86,7 @@ export class LeadsController {
    */
   async getFileUrl(req: Request, res: Response): Promise<void> {
     try {
-      global.logger.info(`Initiating getFileUrl lead request [CONTROLLER]`, {
+      global.logger.info('Initiating getFileUrl lead request [CONTROLLER]', {
         methodName: this.getFileUrl.name,
         fileName: __filename,
         id: req.params.id,
@@ -102,7 +102,7 @@ export class LeadsController {
    */
   async getLeads(req: Request, res: Response): Promise<void> {
     try {
-      global.logger.info(`Initiating getLeads [CONTROLLER]`, {
+      global.logger.info('Initiating getLeads [CONTROLLER]', {
         methodName: this.getLeads.name,
         fileName: __filename,
         id: req.params.id,
@@ -119,7 +119,7 @@ export class LeadsController {
    */
   async softDelete(req: Request, res: Response): Promise<void> {
     try {
-      global.logger.info(`Initiating softDelete lead request [CONTROLLER]`, {
+      global.logger.info('Initiating softDelete lead request [CONTROLLER]', {
         methodName: this.softDelete.name,
         fileName: __filename,
         id: req.params.id,

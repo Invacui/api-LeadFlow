@@ -1,4 +1,4 @@
-import { logger } from "@/logger/logger";
+import { logger } from '@/logger/logger';
 // BullMQ engagement worker stub
 import prisma from '@/db/prisma';
 import { sendEmail } from '@/shared/lib/resend.lib';

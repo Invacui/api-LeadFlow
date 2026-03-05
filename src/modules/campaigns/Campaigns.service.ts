@@ -13,7 +13,7 @@ export class CampaignsService {
    * List campaigns for a user with pagination.
    */
   async list(userId: string, query: Record<string, any>) {
-    global.logger.info(`Initiating list campaigns [SERVICE]`, {
+    global.logger.info('Initiating list campaigns [SERVICE]', {
       methodName: this.list.name,
       fileName: __filename,
       userId,
@@ -27,7 +27,7 @@ export class CampaignsService {
    * @throws Error when the campaign is not found.
    */
   async getById(id: string, userId: string) {
-    global.logger.info(`Initiating getById campaign [SERVICE]`, {
+    global.logger.info('Initiating getById campaign [SERVICE]', {
       methodName: this.getById.name,
       fileName: __filename,
       id,
@@ -45,7 +45,7 @@ export class CampaignsService {
    * prevents inconsistent state transitions.
    */
   async pause(id: string, userId: string) {
-    global.logger.info(`Initiating pause campaign [SERVICE]`, {
+    global.logger.info('Initiating pause campaign [SERVICE]', {
       methodName: this.pause.name,
       fileName: __filename,
       id,
@@ -64,7 +64,7 @@ export class CampaignsService {
    * `RUNNING`. All other statuses are rejected.
    */
   async resume(id: string, userId: string) {
-    global.logger.info(`Initiating resume campaign [SERVICE]`, {
+    global.logger.info('Initiating resume campaign [SERVICE]', {
       methodName: this.resume.name,
       fileName: __filename,
       id,
@@ -80,7 +80,7 @@ export class CampaignsService {
    * Get engagement logs for a campaign, after verifying ownership.
    */
   async getLogs(id: string, userId: string, query: Record<string, any>) {
-    global.logger.info(`Initiating getLogs campaign [SERVICE]`, {
+    global.logger.info('Initiating getLogs campaign [SERVICE]', {
       methodName: this.getLogs.name,
       fileName: __filename,
       id,
@@ -95,7 +95,7 @@ export class CampaignsService {
    * Get "hot leads" for a campaign, after verifying ownership.
    */
   async getHotLeads(id: string, userId: string, query: Record<string, any>) {
-    global.logger.info(`Initiating getHotLeads campaign [SERVICE]`, {
+    global.logger.info('Initiating getHotLeads campaign [SERVICE]', {
       methodName: this.getHotLeads.name,
       fileName: __filename,
       id,

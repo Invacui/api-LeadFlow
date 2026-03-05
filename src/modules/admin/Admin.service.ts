@@ -16,7 +16,7 @@ export class AdminService {
    * Get all users with pagination.
    */
   async getUsers(query: Record<string, any>) {
-    global.logger.info(`Initiating getUsers [SERVICE]`, {
+    global.logger.info('Initiating getUsers [SERVICE]', {
       methodName: this.getUsers.name,
       fileName: __filename,
     });
@@ -29,7 +29,7 @@ export class AdminService {
    * @throws Error when the user is not found.
    */
   async getUserById(id: string) {
-    global.logger.info(`Initiating getUserById [SERVICE]`, {
+    global.logger.info('Initiating getUserById [SERVICE]', {
       methodName: this.getUserById.name,
       fileName: __filename,
       id,
@@ -43,7 +43,7 @@ export class AdminService {
    * Update a user's token balance.
    */
   async updateTokens(id: string, data: UpdateTokensRequest) {
-    global.logger.info(`Initiating updateTokens [SERVICE]`, {
+    global.logger.info('Initiating updateTokens [SERVICE]', {
       methodName: this.updateTokens.name,
       fileName: __filename,
       id,
@@ -55,7 +55,7 @@ export class AdminService {
    * Suspend or unsuspend a user account.
    */
   async suspendUser(id: string, suspend: boolean) {
-    global.logger.info(`Initiating suspendUser [SERVICE]`, {
+    global.logger.info('Initiating suspendUser [SERVICE]', {
       methodName: this.suspendUser.name,
       fileName: __filename,
       id,
@@ -68,7 +68,7 @@ export class AdminService {
    * Soft-delete a user account.
    */
   async deleteUser(id: string) {
-    global.logger.info(`Initiating deleteUser [SERVICE]`, {
+    global.logger.info('Initiating deleteUser [SERVICE]', {
       methodName: this.deleteUser.name,
       fileName: __filename,
       id,
@@ -80,7 +80,7 @@ export class AdminService {
    * Get all lead requests in the system with pagination.
    */
   async getLeadRequests(query: Record<string, any>) {
-    global.logger.info(`Initiating getLeadRequests [SERVICE]`, {
+    global.logger.info('Initiating getLeadRequests [SERVICE]', {
       methodName: this.getLeadRequests.name,
       fileName: __filename,
     });
@@ -91,7 +91,7 @@ export class AdminService {
    * Get all campaigns in the system with pagination.
    */
   async getCampaigns(query: Record<string, any>) {
-    global.logger.info(`Initiating getCampaigns [SERVICE]`, {
+    global.logger.info('Initiating getCampaigns [SERVICE]', {
       methodName: this.getCampaigns.name,
       fileName: __filename,
     });
@@ -102,7 +102,7 @@ export class AdminService {
    * Get high-level aggregate statistics for the admin dashboard.
    */
   async getStats() {
-    global.logger.info(`Initiating getStats [SERVICE]`, {
+    global.logger.info('Initiating getStats [SERVICE]', {
       methodName: this.getStats.name,
       fileName: __filename,
     });

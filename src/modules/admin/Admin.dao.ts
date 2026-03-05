@@ -16,7 +16,7 @@ export class AdminDao {
    * Get all non-deleted users with pagination.
    */
   async getAllUsers(query: Record<string, any>) {
-    global.logger.info(`Getting all users [DAO]`, {
+    global.logger.info('Getting all users [DAO]', {
       methodName: this.getAllUsers.name,
       fileName: __filename,
     });
@@ -34,7 +34,7 @@ export class AdminDao {
    * Get a single non-deleted user by ID.
    */
   async getUserById(id: string) {
-    global.logger.info(`Getting user by id [DAO]`, {
+    global.logger.info('Getting user by id [DAO]', {
       methodName: this.getUserById.name,
       fileName: __filename,
       id,
@@ -46,7 +46,7 @@ export class AdminDao {
    * Set a user's token balance.
    */
   async updateTokenBalance(id: string, tokenBalance: number) {
-    global.logger.info(`Updating token balance [DAO]`, {
+    global.logger.info('Updating token balance [DAO]', {
       methodName: this.updateTokenBalance.name,
       fileName: __filename,
       id,
@@ -58,7 +58,7 @@ export class AdminDao {
    * Toggle the suspended flag for a user.
    */
   async suspendUser(id: string, suspend: boolean) {
-    global.logger.info(`Suspend user [DAO]`, {
+    global.logger.info('Suspend user [DAO]', {
       methodName: this.suspendUser.name,
       fileName: __filename,
       id,
@@ -71,7 +71,7 @@ export class AdminDao {
    * Soft-delete a user by marking `isDeleted` true.
    */
   async deleteUser(id: string) {
-    global.logger.info(`Delete user (soft) [DAO]`, {
+    global.logger.info('Delete user (soft) [DAO]', {
       methodName: this.deleteUser.name,
       fileName: __filename,
       id,
@@ -83,7 +83,7 @@ export class AdminDao {
    * Get all lead requests across all users with pagination.
    */
   async getAllLeadRequests(query: Record<string, any>) {
-    global.logger.info(`Getting all lead requests [DAO]`, {
+    global.logger.info('Getting all lead requests [DAO]', {
       methodName: this.getAllLeadRequests.name,
       fileName: __filename,
     });
@@ -99,7 +99,7 @@ export class AdminDao {
    * Get all campaigns across all users with pagination.
    */
   async getAllCampaigns(query: Record<string, any>) {
-    global.logger.info(`Getting all campaigns [DAO]`, {
+    global.logger.info('Getting all campaigns [DAO]', {
       methodName: this.getAllCampaigns.name,
       fileName: __filename,
     });
@@ -115,7 +115,7 @@ export class AdminDao {
    * Get aggregate statistics for users, lead requests, campaigns, and leads.
    */
   async getStats() {
-    global.logger.info(`Getting stats [DAO]`, {
+    global.logger.info('Getting stats [DAO]', {
       methodName: this.getStats.name,
       fileName: __filename,
     });

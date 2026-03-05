@@ -26,7 +26,7 @@ export class TemplatesService {
    * @param data   Template payload from the client.
    */
   async create(userId: string, data: CreateTemplateRequest) {
-    global.logger.info(`Initiating create template [SERVICE]`, {
+    global.logger.info('Initiating create template [SERVICE]', {
       methodName: this.create.name,
       fileName: __filename,
       userId,
@@ -41,7 +41,7 @@ export class TemplatesService {
    * @param query  Raw query params used for pagination and filtering.
    */
   async list(userId: string, query: Record<string, any>) {
-    global.logger.info(`Initiating list templates [SERVICE]`, {
+    global.logger.info('Initiating list templates [SERVICE]', {
       methodName: this.list.name,
       fileName: __filename,
       userId,
@@ -55,7 +55,7 @@ export class TemplatesService {
    * @throws Error when the template is not found.
    */
   async getById(id: string, userId: string) {
-    global.logger.info(`Initiating getById template [SERVICE]`, {
+    global.logger.info('Initiating getById template [SERVICE]', {
       methodName: this.getById.name,
       fileName: __filename,
       id,
@@ -73,7 +73,7 @@ export class TemplatesService {
    * published templates will result in an error.
    */
   async update(id: string, userId: string, data: UpdateTemplateRequest) {
-    global.logger.info(`Initiating update template [SERVICE]`, {
+    global.logger.info('Initiating update template [SERVICE]', {
       methodName: this.update.name,
       fileName: __filename,
       id,
@@ -92,7 +92,7 @@ export class TemplatesService {
    * @throws Error when the template does not exist or is not owned by the user.
    */
   async delete(id: string, userId: string) {
-    global.logger.info(`Initiating delete template [SERVICE]`, {
+    global.logger.info('Initiating delete template [SERVICE]', {
       methodName: this.delete.name,
       fileName: __filename,
       id,
@@ -111,7 +111,7 @@ export class TemplatesService {
    * record for future reuse.
    */
   async preview(id: string, userId: string) {
-    global.logger.info(`Initiating preview template [SERVICE]`, {
+    global.logger.info('Initiating preview template [SERVICE]', {
       methodName: this.preview.name,
       fileName: __filename,
       id,
@@ -144,7 +144,7 @@ export class TemplatesService {
    * so we can evolve the workflow in one place.
    */
   async launch(id: string, userId: string, data: LaunchCampaignRequest) {
-    global.logger.info(`Initiating launch campaign [SERVICE]`, {
+    global.logger.info('Initiating launch campaign [SERVICE]', {
       methodName: this.launch.name,
       fileName: __filename,
       id,

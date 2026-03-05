@@ -21,7 +21,7 @@ export class TemplatesDao {
    * @param data Template fields plus the owning `userId`.
    */
   async create(data: { productName: string; description: string; targetAudience?: string; tone?: any; cta?: string; userId: string }): Promise<Template> {
-    global.logger.info(`Creating template [DAO]`, {
+    global.logger.info('Creating template [DAO]', {
       methodName: this.create.name,
       fileName: __filename,
       userId: data.userId,
@@ -36,7 +36,7 @@ export class TemplatesDao {
    * and count queries in parallel for better performance.
    */
   async findAllByUser(userId: string, query: Record<string, any>): Promise<[Template[], number]> {
-    global.logger.info(`Finding all templates by user [DAO]`, {
+    global.logger.info('Finding all templates by user [DAO]', {
       methodName: this.findAllByUser.name,
       fileName: __filename,
       userId,
@@ -55,7 +55,7 @@ export class TemplatesDao {
    * Find a template by ID, scoping by user ownership.
    */
   async findById(id: string, userId: string): Promise<Template | null> {
-    global.logger.info(`Finding template by id [DAO]`, {
+    global.logger.info('Finding template by id [DAO]', {
       methodName: this.findById.name,
       fileName: __filename,
       id,
@@ -68,7 +68,7 @@ export class TemplatesDao {
    * Partially update a template by ID.
    */
   async update(id: string, data: Partial<Template>): Promise<Template> {
-    global.logger.info(`Updating template [DAO]`, {
+    global.logger.info('Updating template [DAO]', {
       methodName: this.update.name,
       fileName: __filename,
       id,
@@ -80,7 +80,7 @@ export class TemplatesDao {
    * Hard-delete a template by ID.
    */
   async delete(id: string): Promise<Template> {
-    global.logger.info(`Deleting template [DAO]`, {
+    global.logger.info('Deleting template [DAO]', {
       methodName: this.delete.name,
       fileName: __filename,
       id,

@@ -20,7 +20,7 @@ export class ConversationsService {
    * List conversations for a user with pagination.
    */
   async list(userId: string, query: Record<string, any>) {
-    global.logger.info(`Initiating list conversations [SERVICE]`, {
+    global.logger.info('Initiating list conversations [SERVICE]', {
       methodName: this.list.name,
       fileName: __filename,
       userId,
@@ -34,7 +34,7 @@ export class ConversationsService {
    * @throws Error when the conversation is not found.
    */
   async getById(id: string, userId: string) {
-    global.logger.info(`Initiating getById conversation [SERVICE]`, {
+    global.logger.info('Initiating getById conversation [SERVICE]', {
       methodName: this.getById.name,
       fileName: __filename,
       id,
@@ -53,7 +53,7 @@ export class ConversationsService {
    * the outbound message to the conversation.
    */
   async reply(id: string, userId: string, data: ReplyRequest) {
-    global.logger.info(`Initiating reply to conversation [SERVICE]`, {
+    global.logger.info('Initiating reply to conversation [SERVICE]', {
       methodName: this.reply.name,
       fileName: __filename,
       id,

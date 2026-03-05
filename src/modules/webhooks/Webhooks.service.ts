@@ -27,7 +27,7 @@ export class WebhooksService {
    * reply indicates scheduling intent.
    */
   async handleEmailReply(data: EmailReplyWebhook): Promise<void> {
-    global.logger.info(`Handling email reply webhook [SERVICE]`, {
+    global.logger.info('Handling email reply webhook [SERVICE]', {
       methodName: this.handleEmailReply.name,
       fileName: __filename,
       from: data.from,
@@ -78,7 +78,7 @@ export class WebhooksService {
    * replies over WhatsApp.
    */
   async handleWaReply(data: WaReplyWebhook): Promise<void> {
-    global.logger.info(`Handling WhatsApp reply webhook [SERVICE]`, {
+    global.logger.info('Handling WhatsApp reply webhook [SERVICE]', {
       methodName: this.handleWaReply.name,
       fileName: __filename,
     });
@@ -117,7 +117,7 @@ export class WebhooksService {
    * @returns The challenge string when verification succeeds, otherwise null.
    */
   verifyWaWebhook(mode: string, token: string, challenge: string): string | null {
-    global.logger.info(`Verifying WhatsApp webhook [SERVICE]`, {
+    global.logger.info('Verifying WhatsApp webhook [SERVICE]', {
       methodName: this.verifyWaWebhook.name,
       fileName: __filename,
       mode,

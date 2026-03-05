@@ -1,4 +1,4 @@
-import { logger } from "@/logger/logger";
+import { logger } from '@/logger/logger';
 // Upstash Redis connection singleton stub — enable by installing @upstash/redis
 const REDIS_URL = process.env.REDIS_URL;
 

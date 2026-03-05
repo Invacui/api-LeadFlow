@@ -27,7 +27,7 @@ if (isNaN(PORT) || PORT < 1 || PORT > 65535) {
 
 // Start the server
 const server = app.listen(PORT, () => {
-  global.logger.info(`Server started successfully`, {
+  global.logger.info('Server started successfully', {
     fileName: __filename,
     methodName: 'server',
     variables: {

@@ -1,4 +1,4 @@
-import { logger } from "@/logger/logger";
+import { logger } from '@/logger/logger';
 // BullMQ queue definitions — stub (install bullmq to enable)
 // When bullmq is installed, replace with:
 // import { Queue } from 'bullmq';

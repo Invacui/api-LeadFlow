@@ -1,5 +1,5 @@
-import { logger } from "@/logger/logger";
-import { GroqMessage } from "@/shared/lib/groq.lib";
+import { logger } from '@/logger/logger';
+import { GroqMessage } from '@/shared/lib/groq.lib';
 // BullMQ AI reply worker stub
 import prisma from '@/db/prisma';
 import { generateReply } from '@/shared/lib/groq.lib';

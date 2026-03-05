@@ -25,7 +25,7 @@ export class TemplatesController {
    */
   async create(req: Request, res: Response): Promise<void> {
     try {
-      global.logger.info(`Initiating create template [CONTROLLER]`, {
+      global.logger.info('Initiating create template [CONTROLLER]', {
         methodName: this.create.name,
         fileName: __filename,
         userId: req.user!.id,
@@ -43,7 +43,7 @@ export class TemplatesController {
    */
   async list(req: Request, res: Response): Promise<void> {
     try {
-      global.logger.info(`Initiating list templates [CONTROLLER]`, {
+      global.logger.info('Initiating list templates [CONTROLLER]', {
         methodName: this.list.name,
         fileName: __filename,
         userId: req.user!.id,
@@ -62,7 +62,7 @@ export class TemplatesController {
    */
   async getById(req: Request, res: Response): Promise<void> {
     try {
-      global.logger.info(`Initiating getById template [CONTROLLER]`, {
+      global.logger.info('Initiating getById template [CONTROLLER]', {
         methodName: this.getById.name,
         fileName: __filename,
         id: req.params.id,
@@ -82,7 +82,7 @@ export class TemplatesController {
    */
   async update(req: Request, res: Response): Promise<void> {
     try {
-      global.logger.info(`Initiating update template [CONTROLLER]`, {
+      global.logger.info('Initiating update template [CONTROLLER]', {
         methodName: this.update.name,
         fileName: __filename,
         id: req.params.id,
@@ -101,7 +101,7 @@ export class TemplatesController {
    */
   async delete(req: Request, res: Response): Promise<void> {
     try {
-      global.logger.info(`Initiating delete template [CONTROLLER]`, {
+      global.logger.info('Initiating delete template [CONTROLLER]', {
         methodName: this.delete.name,
         fileName: __filename,
         id: req.params.id,
@@ -120,7 +120,7 @@ export class TemplatesController {
    */
   async preview(req: Request, res: Response): Promise<void> {
     try {
-      global.logger.info(`Initiating preview template [CONTROLLER]`, {
+      global.logger.info('Initiating preview template [CONTROLLER]', {
         methodName: this.preview.name,
         fileName: __filename,
         id: req.params.id,
@@ -140,7 +140,7 @@ export class TemplatesController {
    */
   async launch(req: Request, res: Response): Promise<void> {
     try {
-      global.logger.info(`Initiating launch campaign [CONTROLLER]`, {
+      global.logger.info('Initiating launch campaign [CONTROLLER]', {
         methodName: this.launch.name,
         fileName: __filename,
         id: req.params.id,

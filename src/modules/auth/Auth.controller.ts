@@ -24,7 +24,7 @@ export class AuthController {
    */
   async signup(req: Request, res: Response): Promise<void> {
     try {
-      global.logger.info(`Initiating signup [CONTROLLER]`,
+      global.logger.info('Initiating signup [CONTROLLER]',
         {
           methodName: this.signup.name,
           fileName: __filename,
@@ -50,7 +50,7 @@ export class AuthController {
    */
   async login(req: Request, res: Response): Promise<void> {
     try {
-      global.logger.info(`Initiating login [CONTROLLER]`,
+      global.logger.info('Initiating login [CONTROLLER]',
         {
           methodName: this.login.name,
           fileName: __filename,
@@ -74,7 +74,7 @@ export class AuthController {
    */
   async refresh(req: Request, res: Response): Promise<void> {
     try {
-      global.logger.info(`Initiating refresh [CONTROLLER]`,
+      global.logger.info('Initiating refresh [CONTROLLER]',
         {
           methodName: this.refresh.name,
           fileName: __filename,
@@ -99,7 +99,7 @@ export class AuthController {
    */
   async logout(req: Request, res: Response): Promise<void> {
     try {
-      global.logger.info(`Initiating logout [CONTROLLER]`,
+      global.logger.info('Initiating logout [CONTROLLER]',
         {
           methodName: this.logout.name,
           fileName: __filename,
@@ -123,7 +123,7 @@ export class AuthController {
    */
   async me(req: Request, res: Response): Promise<void> {
     try {
-      global.logger.info(`Initiating me [CONTROLLER]`,
+      global.logger.info('Initiating me [CONTROLLER]',
         {
           methodName: this.me.name,
           fileName: __filename,
@@ -147,7 +147,7 @@ export class AuthController {
    */
   async verifyEmail(req: Request, res: Response): Promise<void> {
     try {
-      global.logger.info(`Initiating verifyEmail [CONTROLLER]`,
+      global.logger.info('Initiating verifyEmail [CONTROLLER]',
         {
           methodName: this.verifyEmail.name,
           fileName: __filename,
@@ -171,7 +171,7 @@ export class AuthController {
    */
   async resendVerification(req: Request, res: Response): Promise<void> {
     try {
-      global.logger.info(`Initiating resendVerification [CONTROLLER]`,
+      global.logger.info('Initiating resendVerification [CONTROLLER]',
         {
           methodName: this.resendVerification.name,
           fileName: __filename,
@@ -195,7 +195,7 @@ export class AuthController {
    */
   async forgotPassword(req: Request, res: Response): Promise<void> {
     try {
-      global.logger.info(`Initiating forgotPassword [CONTROLLER]`,
+      global.logger.info('Initiating forgotPassword [CONTROLLER]',
         {
           methodName: this.forgotPassword.name,
           fileName: __filename,
@@ -219,7 +219,7 @@ export class AuthController {
    */
   async resetPassword(req: Request, res: Response): Promise<void> {
     try {
-      global.logger.info(`Initiating resetPassword [CONTROLLER]`,
+      global.logger.info('Initiating resetPassword [CONTROLLER]',
         {
           methodName: this.resetPassword.name,
           fileName: __filename,

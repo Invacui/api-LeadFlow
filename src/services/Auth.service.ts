@@ -1,4 +1,3 @@
-import { authDao } from '@/dao/Auth.dao';
 import { CreateUserRequest, IAuthService, UserDto } from '@/interfaces/Auth.dto';
 import { UserAuthResponse } from '@/types';
 

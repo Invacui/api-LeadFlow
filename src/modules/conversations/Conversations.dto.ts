@@ -1,4 +1,4 @@
-import { Channel, ConversationStatus, Direction } from '@prisma/client';
+import { Channel } from '@prisma/client';
 
 export interface ReplyRequest {
   content: string;

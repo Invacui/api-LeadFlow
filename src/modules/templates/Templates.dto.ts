@@ -1,4 +1,4 @@
-import { Tone, TemplateStatus } from '@prisma/client';
+import { Tone } from '@prisma/client';
 
 export interface CreateTemplateRequest {
   productName: string;

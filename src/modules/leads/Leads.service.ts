@@ -24,7 +24,7 @@ export class LeadsService {
    * deferred to a background job (see TODO).
    */
   async uploadLead(userId: string, data: CreateLeadRequestByUpload, fileBuffer: Buffer, originalName: string) {
-    global.logger.info(`Initiating uploadLead [SERVICE]`, {
+    global.logger.info('Initiating uploadLead [SERVICE]', {
       methodName: this.uploadLead.name,
       fileName: __filename,
       userId,
@@ -46,7 +46,7 @@ export class LeadsService {
    * job.
    */
   async linkLead(userId: string, data: CreateLeadRequestByLink) {
-    global.logger.info(`Initiating linkLead [SERVICE]`, {
+    global.logger.info('Initiating linkLead [SERVICE]', {
       methodName: this.linkLead.name,
       fileName: __filename,
       userId,
@@ -61,7 +61,7 @@ export class LeadsService {
    * List lead requests for a user with pagination.
    */
   async list(userId: string, query: Record<string, any>) {
-    global.logger.info(`Initiating list lead requests [SERVICE]`, {
+    global.logger.info('Initiating list lead requests [SERVICE]', {
       methodName: this.list.name,
       fileName: __filename,
       userId,
@@ -75,7 +75,7 @@ export class LeadsService {
    * @throws Error when the request is not found or not owned by the user.
    */
   async getById(id: string, userId: string) {
-    global.logger.info(`Initiating getById lead request [SERVICE]`, {
+    global.logger.info('Initiating getById lead request [SERVICE]', {
       methodName: this.getById.name,
       fileName: __filename,
       id,
@@ -92,7 +92,7 @@ export class LeadsService {
    * @throws Error when the request or file key does not exist.
    */
   async getSignedFileUrl(id: string, userId: string) {
-    global.logger.info(`Initiating getSignedFileUrl [SERVICE]`, {
+    global.logger.info('Initiating getSignedFileUrl [SERVICE]', {
       methodName: this.getSignedFileUrl.name,
       fileName: __filename,
       id,
@@ -107,7 +107,7 @@ export class LeadsService {
    * List parsed leads for a given lead request with pagination.
    */
   async getLeads(id: string, userId: string, query: Record<string, any>) {
-    global.logger.info(`Initiating getLeads [SERVICE]`, {
+    global.logger.info('Initiating getLeads [SERVICE]', {
       methodName: this.getLeads.name,
       fileName: __filename,
       id,
@@ -125,7 +125,7 @@ export class LeadsService {
    * historical analytics remain intact.
    */
   async softDelete(id: string, userId: string) {
-    global.logger.info(`Initiating softDelete lead request [SERVICE]`, {
+    global.logger.info('Initiating softDelete lead request [SERVICE]', {
       methodName: this.softDelete.name,
       fileName: __filename,
       id,

@@ -6,13 +6,13 @@ export enum Role {
     USER
   }
   
- export enum Plan {
+export enum Plan {
     FREE,
     PRO,
     COPILOT
   }
   
- export enum PaymentStatus {
+export enum PaymentStatus {
     PENDING,
     SUCCESS,
     FAILED

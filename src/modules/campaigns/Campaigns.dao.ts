@@ -19,7 +19,7 @@ export class CampaignsDao {
    * List campaigns for a user with pagination.
    */
   async findAllByUser(userId: string, query: Record<string, any>): Promise<[Campaign[], number]> {
-    global.logger.info(`Finding all campaigns by user [DAO]`, {
+    global.logger.info('Finding all campaigns by user [DAO]', {
       methodName: this.findAllByUser.name,
       fileName: __filename,
       userId,
@@ -38,7 +38,7 @@ export class CampaignsDao {
    * Find a single campaign by ID owned by the given user.
    */
   async findById(id: string, userId: string): Promise<Campaign | null> {
-    global.logger.info(`Finding campaign by id [DAO]`, {
+    global.logger.info('Finding campaign by id [DAO]', {
       methodName: this.findById.name,
       fileName: __filename,
       id,
@@ -51,7 +51,7 @@ export class CampaignsDao {
    * Partially update a campaign by ID.
    */
   async update(id: string, data: Partial<Campaign>): Promise<Campaign> {
-    global.logger.info(`Updating campaign [DAO]`, {
+    global.logger.info('Updating campaign [DAO]', {
       methodName: this.update.name,
       fileName: __filename,
       id,
@@ -66,7 +66,7 @@ export class CampaignsDao {
    * paginated response.
    */
   async getLogs(campaignId: string, query: Record<string, any>) {
-    global.logger.info(`Getting campaign logs [DAO]`, {
+    global.logger.info('Getting campaign logs [DAO]', {
       methodName: this.getLogs.name,
       fileName: __filename,
       campaignId,
@@ -88,7 +88,7 @@ export class CampaignsDao {
    * one engagement log associated with the given campaign.
    */
   async getHotLeads(campaignId: string, query: Record<string, any>) {
-    global.logger.info(`Getting hot leads for campaign [DAO]`, {
+    global.logger.info('Getting hot leads for campaign [DAO]', {
       methodName: this.getHotLeads.name,
       fileName: __filename,
       campaignId,

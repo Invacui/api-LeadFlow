@@ -24,7 +24,7 @@ export class WebhooksController {
    */
   async emailReply(req: Request, res: Response): Promise<void> {
     try {
-      global.logger.info(`Initiating emailReply webhook [CONTROLLER]`, {
+      global.logger.info('Initiating emailReply webhook [CONTROLLER]', {
         methodName: this.emailReply.name,
         fileName: __filename,
       });
@@ -45,7 +45,7 @@ export class WebhooksController {
    */
   async waReply(req: Request, res: Response): Promise<void> {
     try {
-      global.logger.info(`Initiating waReply webhook [CONTROLLER]`, {
+      global.logger.info('Initiating waReply webhook [CONTROLLER]', {
         methodName: this.waReply.name,
         fileName: __filename,
       });
@@ -58,7 +58,7 @@ export class WebhooksController {
    * Verify the WhatsApp webhook subscription (GET callback).
    */
   waVerifyGet(req: Request, res: Response): void {
-    global.logger.info(`Initiating waVerifyGet webhook [CONTROLLER]`, {
+    global.logger.info('Initiating waVerifyGet webhook [CONTROLLER]', {
       methodName: this.waVerifyGet.name,
       fileName: __filename,
     });
@@ -72,7 +72,7 @@ export class WebhooksController {
    * Acknowledge WhatsApp webhook delivery (POST callback).
    */
   waVerifyPost(req: Request, res: Response): void {
-    global.logger.info(`Initiating waVerifyPost webhook [CONTROLLER]`, {
+    global.logger.info('Initiating waVerifyPost webhook [CONTROLLER]', {
       methodName: this.waVerifyPost.name,
       fileName: __filename,
     });

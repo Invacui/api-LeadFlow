@@ -21,7 +21,7 @@ export class ConversationsController {
    */
   async list(req: Request, res: Response): Promise<void> {
     try {
-      global.logger.info(`Initiating list conversations [CONTROLLER]`, {
+      global.logger.info('Initiating list conversations [CONTROLLER]', {
         methodName: this.list.name,
         fileName: __filename,
         userId: req.user!.id,
@@ -37,7 +37,7 @@ export class ConversationsController {
    */
   async getById(req: Request, res: Response): Promise<void> {
     try {
-      global.logger.info(`Initiating getById conversation [CONTROLLER]`, {
+      global.logger.info('Initiating getById conversation [CONTROLLER]', {
         methodName: this.getById.name,
         fileName: __filename,
         id: req.params.id,
@@ -53,7 +53,7 @@ export class ConversationsController {
    */
   async reply(req: Request, res: Response): Promise<void> {
     try {
-      global.logger.info(`Initiating reply to conversation [CONTROLLER]`, {
+      global.logger.info('Initiating reply to conversation [CONTROLLER]', {
         methodName: this.reply.name,
         fileName: __filename,
         id: req.params.id,

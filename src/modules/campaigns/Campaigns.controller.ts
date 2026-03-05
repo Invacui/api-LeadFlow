@@ -21,7 +21,7 @@ export class CampaignsController {
    */
   async list(req: Request, res: Response): Promise<void> {
     try {
-      global.logger.info(`Initiating list campaigns [CONTROLLER]`, {
+      global.logger.info('Initiating list campaigns [CONTROLLER]', {
         methodName: this.list.name,
         fileName: __filename,
         userId: req.user!.id,
@@ -37,7 +37,7 @@ export class CampaignsController {
    */
   async getById(req: Request, res: Response): Promise<void> {
     try {
-      global.logger.info(`Initiating getById campaign [CONTROLLER]`, {
+      global.logger.info('Initiating getById campaign [CONTROLLER]', {
         methodName: this.getById.name,
         fileName: __filename,
         id: req.params.id,
@@ -53,7 +53,7 @@ export class CampaignsController {
    */
   async pause(req: Request, res: Response): Promise<void> {
     try {
-      global.logger.info(`Initiating pause campaign [CONTROLLER]`, {
+      global.logger.info('Initiating pause campaign [CONTROLLER]', {
         methodName: this.pause.name,
         fileName: __filename,
         id: req.params.id,
@@ -69,7 +69,7 @@ export class CampaignsController {
    */
   async resume(req: Request, res: Response): Promise<void> {
     try {
-      global.logger.info(`Initiating resume campaign [CONTROLLER]`, {
+      global.logger.info('Initiating resume campaign [CONTROLLER]', {
         methodName: this.resume.name,
         fileName: __filename,
         id: req.params.id,
@@ -85,7 +85,7 @@ export class CampaignsController {
    */
   async getLogs(req: Request, res: Response): Promise<void> {
     try {
-      global.logger.info(`Initiating getLogs campaign [CONTROLLER]`, {
+      global.logger.info('Initiating getLogs campaign [CONTROLLER]', {
         methodName: this.getLogs.name,
         fileName: __filename,
         id: req.params.id,
@@ -102,7 +102,7 @@ export class CampaignsController {
    */
   async getHotLeads(req: Request, res: Response): Promise<void> {
     try {
-      global.logger.info(`Initiating getHotLeads campaign [CONTROLLER]`, {
+      global.logger.info('Initiating getHotLeads campaign [CONTROLLER]', {
         methodName: this.getHotLeads.name,
         fileName: __filename,
         id: req.params.id,

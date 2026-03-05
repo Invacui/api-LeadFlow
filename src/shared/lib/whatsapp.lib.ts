@@ -1,4 +1,4 @@
-import { logger } from "@/logger/logger";
+import { logger } from '@/logger/logger';
 // Meta WhatsApp Business API stub
 const WA_PHONE_ID = process.env.META_WA_PHONE_ID;
 const WA_TOKEN = process.env.META_WA_TOKEN;

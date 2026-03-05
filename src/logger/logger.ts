@@ -2,20 +2,20 @@ import * as path from 'path';
 
 /** ANSI color codes for terminal output */
 enum Colors {
-  RESET = "\x1b[0m",
-  RED = "\x1b[31m",
-  BLUE = "\x1b[34m",
-  YELLOW = "\x1b[33m",
-  GREEN = "\x1b[32m",
-  UNDERLINE = "\x1b[4m"
+  RESET = '\x1b[0m',
+  RED = '\x1b[31m',
+  BLUE = '\x1b[34m',
+  YELLOW = '\x1b[33m',
+  GREEN = '\x1b[32m',
+  UNDERLINE = '\x1b[4m'
 }
 
 /** Available log levels */
 enum LogLevel {
-  ERROR = "error",
-  DEBUG = "debug", 
-  WARN = "warn",
-  INFO = "info"
+  ERROR = 'error',
+  DEBUG = 'debug', 
+  WARN = 'warn',
+  INFO = 'info'
 }
 
 /** Context object for log messages */
@@ -64,19 +64,19 @@ const logger: ILogger = {
     const { fileName, methodName, ...variables } = context;
     
     // Get the current file name safely from module.filename
-    const resolvedFileName: string = logger.getFileNameFromModule(fileName) || fileName || "unknown_file";
-    const resolvedMethodName: string = methodName || "unknown_method";
+    const resolvedFileName: string = logger.getFileNameFromModule(fileName) || fileName || 'unknown_file';
+    const resolvedMethodName: string = methodName || 'unknown_method';
 
     // Construct variables string if variables exist
-    let variableStr = "";
+    let variableStr = '';
     if (Object.keys(variables).length > 0) {
-      variableStr = "\n[VARIABLES]: ";
+      variableStr = '\n[VARIABLES]: ';
       
       for (const [key, value] of Object.entries(variables)) {
         let formattedValue = value;
         
         // Format URLs with underline and blue color
-        if (typeof value === "string" && value.startsWith("http")) {
+        if (typeof value === 'string' && value.startsWith('http')) {
           formattedValue = `${Colors.UNDERLINE}${Colors.BLUE}${value}${Colors.RESET}`;
         }
         
