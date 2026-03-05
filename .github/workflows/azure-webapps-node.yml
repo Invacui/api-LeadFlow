@@ -1,0 +1,85 @@
+# Name shown in the GitHub Actions UI for this workflow
+name: Deploy to Staging
+
+# Defines when this workflow will run
+on:
+  push:
+    branches:
+      - dev        # Run this workflow whenever code is pushed to the "dev" branch
+
+# A workflow is made of jobs
+jobs:
+
+  # First job: run tests and build the project
+  test-and-build:
+
+    # The virtual machine GitHub will start for this job
+    runs-on: ubuntu-latest
+
+    # Steps run sequentially inside the job
+    steps:
+
+      # Step 1: Download the repository code into the runner
+      - uses: actions/checkout@v4
+
+      # Step 2: Install Node.js in the runner environment
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '18'  # Specifies which Node.js version to install
+
+      # Step 3: Install project dependencies using package-lock.json
+      # "npm ci" is faster and deterministic for CI environments
+      - name: Install dependencies
+        run: npm ci
+
+      # Step 4: Run the linter to check for code style or syntax issues
+      - name: Lint
+        run: npm run lint
+
+      # Step 5: Execute automated tests
+      # If tests fail, the workflow stops and deployment will not happen
+      - name: Test
+        run: npm test
+
+      # Step 6: Build the production bundle (React/Node/etc.)
+      - name: Build
+        run: npm run build
+
+
+  # Second job: deployment job
+  deploy:
+
+    # This ensures the deploy job runs only after the test-and-build job succeeds
+    needs: test-and-build
+
+    # Again start a fresh GitHub runner
+    runs-on: ubuntu-latest
+
+    steps:
+
+      # Step 1: Checkout repository code again
+      # Each job runs on a fresh machine, so the repo must be downloaded again
+      - uses: actions/checkout@v4
+
+      # Step 2: Deployment step
+      - name: Deploy to staging
+
+        # Environment variables available only inside this step
+        env:
+          # Fetch secret from GitHub repository or environment secrets
+          # Used for authenticating with the deployment platform
+          STAGING_DEPLOY_TOKEN: ${{ secrets.STAGING_DEPLOY_TOKEN }}
+
+        # Shell commands executed on the runner
+        run: |
+
+          # Placeholder for the real deployment command
+          # In real setups this could be:
+          # - curl request to a deploy webhook
+          # - AWS CLI deploy command
+          # - Docker push
+          # - SSH to server and pull new code
+
+          # This line just prints the first few characters of the token
+          # It proves the secret was successfully loaded
+          echo "Deploying staging with token=${STAGING_DEPLOY_TOKEN:0:4}***"
