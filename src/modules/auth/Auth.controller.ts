@@ -12,7 +12,7 @@ import { success, error } from '@/shared/helpers/response.helper';
  * 
  * @description Controller class for handling authentication-related operations such as user signup, login, token refresh, logout, and email verification. Each method corresponds to a specific authentication action and interacts with the AuthService to perform the necessary business logic. The controller also handles request validation and response formatting, ensuring that appropriate success or error messages are returned based on the outcome of each operation.
  */
-export class AuthController {
+class AuthController {
 
   /**
    * User signup
@@ -22,11 +22,11 @@ export class AuthController {
    * @param req - Express request object
    * @param res - Express response object
    */
-  async signup(req: Request, res: Response): Promise<void> {
+  signup = async (req: Request, res: Response): Promise<void> => {
     try {
       global.logger.info('Initiating signup [CONTROLLER]',
         {
-          methodName: this.signup.name,
+          methodName: 'signup',
           fileName: __filename,
           email: req.body.email,
           corporationName: req.body.corporationName,
@@ -38,7 +38,7 @@ export class AuthController {
       const status = err.message === 'Email already registered' ? 409 : 400;
       error(res, status, err.message);
     }
-  }
+  };
 
   /**
    * User login
@@ -48,11 +48,11 @@ export class AuthController {
    * @param req - Express request object
    * @param res - Express response object
    */
-  async login(req: Request, res: Response): Promise<void> {
+  login = async (req: Request, res: Response): Promise<void> => {
     try {
       global.logger.info('Initiating login [CONTROLLER]',
         {
-          methodName: this.login.name,
+          methodName: 'login',
           fileName: __filename,
           email: req.body.email,
         }
@@ -62,7 +62,7 @@ export class AuthController {
     } catch (err: any) {
       error(res, 401, err.message);
     }
-  }
+  };
 
   /**
    * Refresh access token
@@ -72,11 +72,11 @@ export class AuthController {
    * @param req - Express request object
    * @param res - Express response object
    */
-  async refresh(req: Request, res: Response): Promise<void> {
+  refresh = async (req: Request, res: Response): Promise<void> => {
     try {
       global.logger.info('Initiating refresh [CONTROLLER]',
         {
-          methodName: this.refresh.name,
+          methodName: 'refresh',
           fileName: __filename,
           userId: req.user!.id,
         }
@@ -87,7 +87,7 @@ export class AuthController {
     } catch (err: any) {
       error(res, 401, err.message);
     }
-  }
+  };
 
   /**
    * User logout
@@ -97,11 +97,11 @@ export class AuthController {
    * @param req - Express request object
    * @param res - Express response object
    */
-  async logout(req: Request, res: Response): Promise<void> {
+  logout = async (req: Request, res: Response): Promise<void> => {
     try {
       global.logger.info('Initiating logout [CONTROLLER]',
         {
-          methodName: this.logout.name,
+          methodName: 'logout',
           fileName: __filename,
           userId: req.user!.id,
         }
@@ -111,7 +111,7 @@ export class AuthController {
     } catch (err: any) {
       error(res, 500, err.message);
     }
-  }
+  };
 
   /**
    * Get current user information
@@ -121,11 +121,11 @@ export class AuthController {
    * @param req 
    * @param res 
    */
-  async me(req: Request, res: Response): Promise<void> {
+  me = async (req: Request, res: Response): Promise<void> => {
     try {
       global.logger.info('Initiating me [CONTROLLER]',
         {
-          methodName: this.me.name,
+          methodName: 'me',
           fileName: __filename,
           userId: req.user!.id,
         }
@@ -135,7 +135,7 @@ export class AuthController {
     } catch (err: any) {
       error(res, 404, err.message);
     }
-  }
+  };
 
   /**
    * Verify user email
@@ -145,11 +145,11 @@ export class AuthController {
    * @param req 
    * @param res 
    */
-  async verifyEmail(req: Request, res: Response): Promise<void> {
+  verifyEmail = async (req: Request, res: Response): Promise<void> => {
     try {
       global.logger.info('Initiating verifyEmail [CONTROLLER]',
         {
-          methodName: this.verifyEmail.name,
+          methodName: 'verifyEmail',
           fileName: __filename,
           token: req.params.token,
         }
@@ -159,7 +159,7 @@ export class AuthController {
     } catch (err: any) {
       error(res, 400, err.message);
     }
-  }
+  };
 
   /**
    * Resend verification email
@@ -169,11 +169,11 @@ export class AuthController {
    * @param req - Express request object
    * @param res - Express response object
    */
-  async resendVerification(req: Request, res: Response): Promise<void> {
+  resendVerification = async (req: Request, res: Response): Promise<void> => {
     try {
       global.logger.info('Initiating resendVerification [CONTROLLER]',
         {
-          methodName: this.resendVerification.name,
+          methodName: 'resendVerification',
           fileName: __filename,
           email: req.body.email,
         }
@@ -183,7 +183,7 @@ export class AuthController {
     } catch (err: any) {
       error(res, 500, err.message);
     }
-  }
+  };
 
   /**
    * Handle forgot password
@@ -193,11 +193,11 @@ export class AuthController {
    * @param req 
    * @param res 
    */
-  async forgotPassword(req: Request, res: Response): Promise<void> {
+  forgotPassword = async (req: Request, res: Response): Promise<void> => {
     try {
       global.logger.info('Initiating forgotPassword [CONTROLLER]',
         {
-          methodName: this.forgotPassword.name,
+          methodName: 'forgotPassword',
           fileName: __filename,
           email: req.body.email,
         }
@@ -207,7 +207,7 @@ export class AuthController {
     } catch (err: any) {
       error(res, 500, err.message);
     }
-  }
+  };
 
   /**
    * Reset user password
@@ -217,11 +217,11 @@ export class AuthController {
    * @param req - Express request object
    * @param res - Express response object
    */
-  async resetPassword(req: Request, res: Response): Promise<void> {
+  resetPassword = async (req: Request, res: Response): Promise<void> => {
     try {
       global.logger.info('Initiating resetPassword [CONTROLLER]',
         {
-          methodName: this.resetPassword.name,
+          methodName: 'resetPassword',
           fileName: __filename,
           token: req.body.token,
         }
@@ -231,8 +231,7 @@ export class AuthController {
     } catch (err: any) {
       error(res, 400, err.message);
     }
-  }
+  };
 }
 
-export const authController = new AuthController();
-export default authController;
+export default AuthController;

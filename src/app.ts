@@ -2,6 +2,9 @@ import express, { Application, Request, Response, NextFunction } from 'express';
 import cors from 'cors';
 import bodyParser from 'body-parser';
 
+// Import logger to ensure it's initialized
+import '@/logger/logger';
+
 import envConfig from '@/config/environment';
 import legacyRoutes from '@/routes/Index.routes';
 import ErrorHandler from '@/utils/ErrorHandler.utils';

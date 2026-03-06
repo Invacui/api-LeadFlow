@@ -2,13 +2,14 @@
 import { Router } from 'express';
 
 // Campaigns controller
-import { campaignsController } from './Campaigns.controller';
+import CampaignsController from './Campaigns.controller';
 
 // Middleware
 import { isLoggedIn } from '@/shared/middleware/IsLoggedIn';
 import { apiRateLimiter } from '@/shared/middleware/rateLimiter';
 
 const router = Router();
+const campaignsController = new CampaignsController();
 router.use(apiRateLimiter, isLoggedIn);
 
 router.get('/', (req, res) => campaignsController.list(req, res));

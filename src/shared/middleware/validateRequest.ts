@@ -15,6 +15,13 @@ export const validateRequest = (schema: Joi.ObjectSchema, source: 'body' | 'quer
     const data = req[source];
     const { error } = schema.validate(data, { abortEarly: false });
     if (error) {
+      global.logger.error('Validation Failed [MIDDLEWARE]', {
+        fileName: __filename,
+        methodName: 'validateRequest',
+        variables: {
+          error,
+        },
+      });
       res.status(422).json({
         success: false,
         error: 'Validation failed',

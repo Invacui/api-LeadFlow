@@ -22,10 +22,10 @@ export class WebhooksController {
    * @description Optionally verifies the HMAC signature when the secret is
    * configured, then forwards the payload to the service layer.
    */
-  async emailReply(req: Request, res: Response): Promise<void> {
+  emailReply = async (req: Request, res: Response): Promise<void> => {
     try {
       global.logger.info('Initiating emailReply webhook [CONTROLLER]', {
-        methodName: this.emailReply.name,
+        methodName: 'emailReply',
         fileName: __filename,
       });
       const sig = req.headers['resend-signature'] as string;
@@ -38,47 +38,46 @@ export class WebhooksController {
       await webhooksService.handleEmailReply(req.body);
       success(res, { received: true });
     } catch (err: any) { error(res, 500, err.message); }
-  }
+  };
 
   /**
    * Handle inbound WhatsApp reply webhooks.
    */
-  async waReply(req: Request, res: Response): Promise<void> {
+  waReply = async (req: Request, res: Response): Promise<void> => {
     try {
       global.logger.info('Initiating waReply webhook [CONTROLLER]', {
-        methodName: this.waReply.name,
+        methodName: 'waReply',
         fileName: __filename,
       });
       await webhooksService.handleWaReply(req.body);
       success(res, { received: true });
     } catch (err: any) { error(res, 500, err.message); }
-  }
+  };
 
   /**
    * Verify the WhatsApp webhook subscription (GET callback).
    */
-  waVerifyGet(req: Request, res: Response): void {
+  waVerifyGet = (req: Request, res: Response): void => {
     global.logger.info('Initiating waVerifyGet webhook [CONTROLLER]', {
-      methodName: this.waVerifyGet.name,
+      methodName: 'waVerifyGet',
       fileName: __filename,
     });
     const { 'hub.mode': mode, 'hub.verify_token': token, 'hub.challenge': challenge } = req.query as any;
     const result = webhooksService.verifyWaWebhook(mode, token, challenge);
     if (result) { res.status(200).send(result); return; }
     error(res, 403, 'Verification failed');
-  }
+  };
 
   /**
    * Acknowledge WhatsApp webhook delivery (POST callback).
    */
-  waVerifyPost(req: Request, res: Response): void {
+  waVerifyPost = (req: Request, res: Response): void => {
     global.logger.info('Initiating waVerifyPost webhook [CONTROLLER]', {
-      methodName: this.waVerifyPost.name,
+      methodName: 'waVerifyPost',
       fileName: __filename,
     });
     success(res, { received: true });
-  }
+  };
 }
 
-export const webhooksController = new WebhooksController();
-export default webhooksController;
+export default WebhooksController;

@@ -2,12 +2,13 @@
 import { Router } from 'express';
 
 // Webhooks controller
-import { webhooksController } from './Webhooks.controller';
+import WebhooksController from './Webhooks.controller';
 
 // Middleware
 import { webhookRateLimiter } from '@/shared/middleware/rateLimiter';
 
 const router = Router();
+const webhooksController = new WebhooksController();
 router.use(webhookRateLimiter);
 
 router.post('/email-reply', (req, res) => webhooksController.emailReply(req, res));

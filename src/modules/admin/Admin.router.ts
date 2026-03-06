@@ -2,7 +2,7 @@
 import { Router } from 'express';
 
 // Admin controller
-import { adminController } from './Admin.controller';
+import AdminController from './Admin.controller';
 
 // Middleware
 import { isLoggedIn } from '@/shared/middleware/IsLoggedIn';
@@ -14,6 +14,7 @@ import { apiRateLimiter } from '@/shared/middleware/rateLimiter';
 import { updateTokensSchema } from './Admin.validator';
 
 const router = Router();
+const adminController = new AdminController();
 router.use(apiRateLimiter, isLoggedIn, requireRole(['ADMIN']));
 
 router.get('/users', (req, res) => adminController.getUsers(req, res));

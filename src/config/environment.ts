@@ -109,8 +109,13 @@ class EnvironmentConfig {
 
   public getCORSConfig() {
     const allowedOrigins = process.env.ALLOWED_ORIGINS?.split(',') || ['*'];
+    global.logger.debug('CORS configuration', {
+      fileName: __filename,
+      methodName: 'getCORSConfig',
+      variables: { allowedOrigins, credentials: process.env.CORS_CREDENTIALS === 'true' },
+    });
     return {
-      origin: this.isProduction() ? allowedOrigins : '*',
+      origin: allowedOrigins,
       credentials: process.env.CORS_CREDENTIALS === 'true',
       methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
       allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With'],

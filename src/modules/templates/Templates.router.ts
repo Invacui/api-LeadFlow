@@ -2,7 +2,7 @@
 import { Router } from 'express';
 
 // Templates controller
-import { templatesController } from './Templates.controller';
+import TemplatesController from './Templates.controller';
 
 // Middleware
 import { isLoggedIn } from '@/shared/middleware/IsLoggedIn';
@@ -13,6 +13,7 @@ import { apiRateLimiter } from '@/shared/middleware/rateLimiter';
 import { createTemplateSchema, updateTemplateSchema, launchCampaignSchema } from './Templates.validator';
 
 const router = Router();
+const templatesController = new TemplatesController();
 router.use(apiRateLimiter, isLoggedIn);
 
 router.post('/', validateRequest(createTemplateSchema), (req, res) => templatesController.create(req, res));

@@ -2,7 +2,7 @@
 import { Router } from 'express';
 
 // Leads controller
-import { leadsController } from './Leads.controller';
+import LeadsController from './Leads.controller';
 
 // Middleware
 import { isLoggedIn } from '@/shared/middleware/IsLoggedIn';
@@ -13,6 +13,7 @@ import { apiRateLimiter } from '@/shared/middleware/rateLimiter';
 import { createByLinkSchema } from './Leads.validator';
 
 const router = Router();
+const leadsController = new LeadsController();
 
 // Handler using middleware to check if user is logged in and apply rate limiting to all routes in this router
 router.use(apiRateLimiter, isLoggedIn);

@@ -2,7 +2,7 @@
 import { Router } from 'express';
 
 // Conversations controller
-import { conversationsController } from './Conversations.controller';
+import ConversationsController from './Conversations.controller';
 
 // Middleware
 import { isLoggedIn } from '@/shared/middleware/IsLoggedIn';
@@ -13,6 +13,7 @@ import { apiRateLimiter } from '@/shared/middleware/rateLimiter';
 import { replySchema } from './Conversations.validator';
 
 const router = Router();
+const conversationsController = new ConversationsController();
 router.use(apiRateLimiter, isLoggedIn);
 
 router.get('/', (req, res) => conversationsController.list(req, res));

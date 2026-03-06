@@ -19,10 +19,10 @@ export class ConversationsController {
   /**
    * List conversations for the authenticated user with pagination.
    */
-  async list(req: Request, res: Response): Promise<void> {
+  list = async (req: Request, res: Response): Promise<void> => {
     try {
       global.logger.info('Initiating list conversations [CONTROLLER]', {
-        methodName: this.list.name,
+        methodName: 'list',
         fileName: __filename,
         userId: req.user!.id,
       });
@@ -30,15 +30,15 @@ export class ConversationsController {
       const { page, limit } = paginate(req.query as any);
       success(res, items, 200, { total, page, limit });
     } catch (err: any) { error(res, 500, err.message); }
-  }
+  };
 
   /**
    * Get a single conversation by ID for the authenticated user.
    */
-  async getById(req: Request, res: Response): Promise<void> {
+  getById = async (req: Request, res: Response): Promise<void> => {
     try {
       global.logger.info('Initiating getById conversation [CONTROLLER]', {
-        methodName: this.getById.name,
+        methodName: 'getById',
         fileName: __filename,
         id: req.params.id,
         userId: req.user!.id,
@@ -46,15 +46,15 @@ export class ConversationsController {
       const result = await conversationsService.getById(req.params.id, req.user!.id);
       success(res, result);
     } catch (err: any) { error(res, 404, err.message); }
-  }
+  };
 
   /**
    * Send a reply in the context of a conversation.
    */
-  async reply(req: Request, res: Response): Promise<void> {
+  reply = async (req: Request, res: Response): Promise<void> => {
     try {
       global.logger.info('Initiating reply to conversation [CONTROLLER]', {
-        methodName: this.reply.name,
+        methodName: 'reply',
         fileName: __filename,
         id: req.params.id,
         userId: req.user!.id,
@@ -62,8 +62,7 @@ export class ConversationsController {
       const result = await conversationsService.reply(req.params.id, req.user!.id, req.body);
       success(res, result, 201);
     } catch (err: any) { error(res, 400, err.message); }
-  }
+  };
 }
 
-export const conversationsController = new ConversationsController();
-export default conversationsController;
+export default ConversationsController;

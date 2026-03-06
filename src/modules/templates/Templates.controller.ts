@@ -23,17 +23,17 @@ export class TemplatesController {
    * @param req Express request containing template fields in `body`.
    * @param res Express response used to send the created template.
    */
-  async create(req: Request, res: Response): Promise<void> {
+  create = async (req: Request, res: Response): Promise<void> => {
     try {
       global.logger.info('Initiating create template [CONTROLLER]', {
-        methodName: this.create.name,
+        methodName: 'create',
         fileName: __filename,
         userId: req.user!.id,
       });
       const result = await templatesService.create(req.user!.id, req.body);
       success(res, result, 201);
     } catch (err: any) { error(res, 400, err.message); }
-  }
+  };
 
   /**
    * List templates for the authenticated user with pagination.
@@ -41,10 +41,10 @@ export class TemplatesController {
    * @param req Express request containing pagination query parameters.
    * @param res Express response used to send the paginated templates.
    */
-  async list(req: Request, res: Response): Promise<void> {
+  list = async (req: Request, res: Response): Promise<void> => {
     try {
       global.logger.info('Initiating list templates [CONTROLLER]', {
-        methodName: this.list.name,
+        methodName: 'list',
         fileName: __filename,
         userId: req.user!.id,
       });
@@ -52,7 +52,7 @@ export class TemplatesController {
       const { page, limit } = paginate(req.query as any);
       success(res, items, 200, { total, page, limit });
     } catch (err: any) { error(res, 500, err.message); }
-  }
+  };
 
   /**
    * Get a single template by ID for the authenticated user.
@@ -60,10 +60,10 @@ export class TemplatesController {
    * @param req Express request containing the template ID in `params`.
    * @param res Express response used to send the template.
    */
-  async getById(req: Request, res: Response): Promise<void> {
+  getById = async (req: Request, res: Response): Promise<void> => {
     try {
       global.logger.info('Initiating getById template [CONTROLLER]', {
-        methodName: this.getById.name,
+        methodName: 'getById',
         fileName: __filename,
         id: req.params.id,
         userId: req.user!.id,
@@ -71,7 +71,7 @@ export class TemplatesController {
       const result = await templatesService.getById(req.params.id, req.user!.id);
       success(res, result);
     } catch (err: any) { error(res, 404, err.message); }
-  }
+  };
 
   /**
    * Update a template owned by the authenticated user.
@@ -80,10 +80,10 @@ export class TemplatesController {
    *            payload in `body`.
    * @param res Express response used to send the updated template.
    */
-  async update(req: Request, res: Response): Promise<void> {
+  update = async (req: Request, res: Response): Promise<void> => {
     try {
       global.logger.info('Initiating update template [CONTROLLER]', {
-        methodName: this.update.name,
+        methodName: 'update',
         fileName: __filename,
         id: req.params.id,
         userId: req.user!.id,
@@ -91,7 +91,7 @@ export class TemplatesController {
       const result = await templatesService.update(req.params.id, req.user!.id, req.body);
       success(res, result);
     } catch (err: any) { error(res, 400, err.message); }
-  }
+  };
 
   /**
    * Delete a template owned by the authenticated user.
@@ -99,10 +99,10 @@ export class TemplatesController {
    * @param req Express request containing the template ID in `params`.
    * @param res Express response used to send a confirmation message.
    */
-  async delete(req: Request, res: Response): Promise<void> {
+  delete = async (req: Request, res: Response): Promise<void> => {
     try {
       global.logger.info('Initiating delete template [CONTROLLER]', {
-        methodName: this.delete.name,
+        methodName: 'delete',
         fileName: __filename,
         id: req.params.id,
         userId: req.user!.id,
@@ -110,7 +110,7 @@ export class TemplatesController {
       await templatesService.delete(req.params.id, req.user!.id);
       success(res, { message: 'Template deleted' });
     } catch (err: any) { error(res, 404, err.message); }
-  }
+  };
 
   /**
    * Generate a sample preview for a template (email/WhatsApp content).
@@ -118,10 +118,10 @@ export class TemplatesController {
    * @param req Express request containing the template ID in `params`.
    * @param res Express response used to send the generated preview.
    */
-  async preview(req: Request, res: Response): Promise<void> {
+  preview = async (req: Request, res: Response): Promise<void> => {
     try {
       global.logger.info('Initiating preview template [CONTROLLER]', {
-        methodName: this.preview.name,
+        methodName: 'preview',
         fileName: __filename,
         id: req.params.id,
         userId: req.user!.id,
@@ -129,7 +129,7 @@ export class TemplatesController {
       const result = await templatesService.preview(req.params.id, req.user!.id);
       success(res, result);
     } catch (err: any) { error(res, 400, err.message); }
-  }
+  };
 
   /**
    * Launch a campaign from a template for the authenticated user.
@@ -138,10 +138,10 @@ export class TemplatesController {
    *            configuration in `body`.
    * @param res Express response used to send the created campaign.
    */
-  async launch(req: Request, res: Response): Promise<void> {
+  launch = async (req: Request, res: Response): Promise<void> => {
     try {
       global.logger.info('Initiating launch campaign [CONTROLLER]', {
-        methodName: this.launch.name,
+        methodName: 'launch',
         fileName: __filename,
         id: req.params.id,
         userId: req.user!.id,
@@ -149,8 +149,7 @@ export class TemplatesController {
       const result = await templatesService.launch(req.params.id, req.user!.id, req.body);
       success(res, result, 201);
     } catch (err: any) { error(res, 400, err.message); }
-  }
+  };
 }
 
-export const templatesController = new TemplatesController();
-export default templatesController;
+export default TemplatesController;

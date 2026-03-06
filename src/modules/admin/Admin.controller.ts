@@ -19,55 +19,55 @@ export class AdminController {
   /**
    * Get paginated list of users for admin dashboard.
    */
-  async getUsers(req: Request, res: Response): Promise<void> {
+  getUsers = async (req: Request, res: Response): Promise<void> => {
     try {
       global.logger.info('Initiating getUsers [CONTROLLER]', {
-        methodName: this.getUsers.name,
+        methodName: 'getUsers',
         fileName: __filename,
       });
       const [items, total] = await adminService.getUsers(req.query as any);
       const { page, limit } = paginate(req.query as any);
       success(res, items, 200, { total, page, limit });
     } catch (err: any) { error(res, 500, err.message); }
-  }
+  };
 
   /**
    * Get a single user by ID.
    */
-  async getUserById(req: Request, res: Response): Promise<void> {
+  getUserById = async (req: Request, res: Response): Promise<void> => {
     try {
       global.logger.info('Initiating getUserById [CONTROLLER]', {
-        methodName: this.getUserById.name,
+        methodName: 'getUserById',
         fileName: __filename,
         id: req.params.id,
       });
       const result = await adminService.getUserById(req.params.id);
       success(res, result);
     } catch (err: any) { error(res, 404, err.message); }
-  }
+  };
 
   /**
    * Update a user's token balance.
    */
-  async updateTokens(req: Request, res: Response): Promise<void> {
+  updateTokens = async (req: Request, res: Response): Promise<void> => {
     try {
       global.logger.info('Initiating updateTokens [CONTROLLER]', {
-        methodName: this.updateTokens.name,
+        methodName: 'updateTokens',
         fileName: __filename,
         id: req.params.id,
       });
       const result = await adminService.updateTokens(req.params.id, req.body);
       success(res, result);
     } catch (err: any) { error(res, 400, err.message); }
-  }
+  };
 
   /**
    * Suspend or unsuspend a user account.
    */
-  async suspendUser(req: Request, res: Response): Promise<void> {
+  suspendUser = async (req: Request, res: Response): Promise<void> => {
     try {
       global.logger.info('Initiating suspendUser [CONTROLLER]', {
-        methodName: this.suspendUser.name,
+        methodName: 'suspendUser',
         fileName: __filename,
         id: req.params.id,
       });
@@ -79,67 +79,66 @@ export class AdminController {
       const result = await adminService.suspendUser(req.params.id, suspend);
       success(res, result);
     } catch (err: any) { error(res, 400, err.message); }
-  }
+  };
 
   /**
    * Soft-delete a user account.
    */
-  async deleteUser(req: Request, res: Response): Promise<void> {
+  deleteUser = async (req: Request, res: Response): Promise<void> => {
     try {
       global.logger.info('Initiating deleteUser [CONTROLLER]', {
-        methodName: this.deleteUser.name,
+        methodName: 'deleteUser',
         fileName: __filename,
         id: req.params.id,
       });
       await adminService.deleteUser(req.params.id);
       success(res, { message: 'User deleted' });
     } catch (err: any) { error(res, 404, err.message); }
-  }
+  };
 
   /**
    * Get paginated list of all lead requests in the system.
    */
-  async getLeadRequests(req: Request, res: Response): Promise<void> {
+  getLeadRequests = async (req: Request, res: Response): Promise<void> => {
     try {
       global.logger.info('Initiating getLeadRequests [CONTROLLER]', {
-        methodName: this.getLeadRequests.name,
+        methodName: 'getLeadRequests',
         fileName: __filename,
       });
       const [items, total] = await adminService.getLeadRequests(req.query as any);
       const { page, limit } = paginate(req.query as any);
       success(res, items, 200, { total, page, limit });
     } catch (err: any) { error(res, 500, err.message); }
-  }
+  };
 
   /**
    * Get paginated list of all campaigns in the system.
    */
-  async getCampaigns(req: Request, res: Response): Promise<void> {
+  getCampaigns = async (req: Request, res: Response): Promise<void> => {
     try {
       global.logger.info('Initiating getCampaigns [CONTROLLER]', {
-        methodName: this.getCampaigns.name,
+        methodName: 'getCampaigns',
         fileName: __filename,
       });
       const [items, total] = await adminService.getCampaigns(req.query as any);
       const { page, limit } = paginate(req.query as any);
       success(res, items, 200, { total, page, limit });
     } catch (err: any) { error(res, 500, err.message); }
-  }
+  };
 
   /**
    * Get aggregate statistics for users, leads, and campaigns.
    */
-  async getStats(req: Request, res: Response): Promise<void> {
+  getStats = async (req: Request, res: Response): Promise<void> => {
     try {
       global.logger.info('Initiating getStats [CONTROLLER]', {
-        methodName: this.getStats.name,
+        methodName: 'getStats',
         fileName: __filename,
       });
       const stats = await adminService.getStats();
       success(res, stats);
     } catch (err: any) { error(res, 500, err.message); }
-  }
+  };
 }
 
-export const adminController = new AdminController();
-export default adminController;
+export default AdminController;
