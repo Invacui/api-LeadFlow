@@ -16,12 +16,12 @@ const router = Router();
 const templatesController = new TemplatesController();
 router.use(apiRateLimiter, isLoggedIn);
 
-router.post('/', validateRequest(createTemplateSchema), (req, res) => templatesController.create(req, res));
-router.get('/', (req, res) => templatesController.list(req, res));
-router.get('/:id', (req, res) => templatesController.getById(req, res));
-router.patch('/:id', validateRequest(updateTemplateSchema), (req, res) => templatesController.update(req, res));
-router.delete('/:id', (req, res) => templatesController.delete(req, res));
-router.post('/:id/preview', (req, res) => templatesController.preview(req, res));
-router.post('/:id/launch', validateRequest(launchCampaignSchema), (req, res) => templatesController.launch(req, res));
+router.post('/', validateRequest(createTemplateSchema), templatesController.create);
+router.get('/', templatesController.list);
+router.get('/:id', templatesController.getById);
+router.patch('/:id', validateRequest(updateTemplateSchema), templatesController.update);
+router.delete('/:id', templatesController.delete);
+router.post('/:id/preview', templatesController.preview);
+router.post('/:id/launch', validateRequest(launchCampaignSchema), templatesController.launch);
 
 export default router;

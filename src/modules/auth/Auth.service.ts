@@ -13,6 +13,9 @@ import { signAccess, signRefresh, verifyRefresh } from '@/shared/helpers/token.h
 // Email sending utility
 import { sendEmail } from '@/shared/lib/resend.lib';
 
+// Redis client for caching refresh tokens
+import redisObj from '@/shared/lib/redis.lib';
+
 // Global constants used across the application
 import { globalConstants } from '@/constants/Global.constants';
 
@@ -119,6 +122,9 @@ export class AuthService {
 
     // Generate authentication tokens
     const tokens = this.generateTokens(user);
+
+    // Store the refresh token in the redis cache with an expiration time (e.g., 7 days)
+    await redisObj.set(`refresh_token:${user.id}`, tokens.refreshToken,  7 * 24 * 60 * 60);
 
     // Update user's refresh token in the database
     await authDao.update(user.id, { refreshToken: tokens.refreshToken });

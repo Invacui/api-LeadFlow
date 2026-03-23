@@ -16,8 +16,8 @@ const router = Router();
 const conversationsController = new ConversationsController();
 router.use(apiRateLimiter, isLoggedIn);
 
-router.get('/', (req, res) => conversationsController.list(req, res));
-router.get('/:id', (req, res) => conversationsController.getById(req, res));
-router.post('/:id/reply', validateRequest(replySchema), (req, res) => conversationsController.reply(req, res));
+router.get('/', conversationsController.list);
+router.get('/:id', conversationsController.getById);
+router.post('/:id/reply', validateRequest(replySchema), conversationsController.reply);
 
 export default router;

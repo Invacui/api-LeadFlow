@@ -19,16 +19,16 @@ const leadsController = new LeadsController();
 router.use(apiRateLimiter, isLoggedIn);
 
 // Create
-router.post('/upload', (req, res) => leadsController.upload(req, res));
-router.post('/link', validateRequest(createByLinkSchema), (req, res) => leadsController.link(req, res));
+router.post('/upload', leadsController.upload);
+router.post('/link', validateRequest(createByLinkSchema), leadsController.link);
 
 // Read
-router.get('/', (req, res) => leadsController.list(req, res));
-router.get('/:id', (req, res) => leadsController.getById(req, res));
-router.get('/:id/file', (req, res) => leadsController.getFileUrl(req, res));
-router.get('/:id/leads', (req, res) => leadsController.getLeads(req, res));
+router.get('/', leadsController.list);
+router.get('/:id', leadsController.getById);
+router.get('/:id/file', leadsController.getFileUrl);
+router.get('/:id/leads', leadsController.getLeads);
 
 // Delete
-router.delete('/:id', (req, res) => leadsController.softDelete(req, res));
+router.delete('/:id', leadsController.softDelete);
 
 export default router;

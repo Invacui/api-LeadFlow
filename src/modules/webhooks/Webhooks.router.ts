@@ -11,9 +11,9 @@ const router = Router();
 const webhooksController = new WebhooksController();
 router.use(webhookRateLimiter);
 
-router.post('/email-reply', (req, res) => webhooksController.emailReply(req, res));
-router.post('/wa-reply', (req, res) => webhooksController.waReply(req, res));
-router.get('/wa-verify', (req, res) => webhooksController.waVerifyGet(req, res));
-router.post('/wa-verify', (req, res) => webhooksController.waVerifyPost(req, res));
+router.post('/email-reply', webhooksController.emailReply);
+router.post('/wa-reply', webhooksController.waReply);
+router.get('/wa-verify', webhooksController.waVerifyGet);
+router.post('/wa-verify', webhooksController.waVerifyPost);
 
 export default router;

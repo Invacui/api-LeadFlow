@@ -12,11 +12,11 @@ const router = Router();
 const campaignsController = new CampaignsController();
 router.use(apiRateLimiter, isLoggedIn);
 
-router.get('/', (req, res) => campaignsController.list(req, res));
-router.get('/:id', (req, res) => campaignsController.getById(req, res));
-router.patch('/:id/pause', (req, res) => campaignsController.pause(req, res));
-router.patch('/:id/resume', (req, res) => campaignsController.resume(req, res));
-router.get('/:id/logs', (req, res) => campaignsController.getLogs(req, res));
-router.get('/:id/hot-leads', (req, res) => campaignsController.getHotLeads(req, res));
+router.get('/', campaignsController.list);
+router.get('/:id', campaignsController.getById);
+router.patch('/:id/pause', campaignsController.pause);
+router.patch('/:id/resume', campaignsController.resume);
+router.get('/:id/logs', campaignsController.getLogs);
+router.get('/:id/hot-leads', campaignsController.getHotLeads);
 
 export default router;

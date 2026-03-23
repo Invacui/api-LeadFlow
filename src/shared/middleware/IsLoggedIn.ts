@@ -13,6 +13,7 @@ export const isLoggedIn = async (req: Request, res: Response, next: NextFunction
     const decoded = verifyAccess(token);
     const user = await prisma.user.findUnique({
       where: { id: decoded.id },
+      // projection
       select: { id: true, role: true, tokenBalance: true, isSuspended: true, isDeleted: true },
     });
     if (!user || user.isDeleted || user.isSuspended) {
